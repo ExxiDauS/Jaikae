@@ -722,6 +722,9 @@
   .hidden {
     display: none;
   }
+  .inline-flex {
+    display: inline-flex;
+  }
   .btn-circle {
     border-radius: calc(infinity * 1px);
     padding-inline: calc(0.25rem * 0);
@@ -733,6 +736,24 @@
   }
   .h-8 {
     height: calc(var(--spacing) * 8);
+  }
+  .h-12 {
+    height: calc(var(--spacing) * 12);
+  }
+  .h-16 {
+    height: calc(var(--spacing) * 16);
+  }
+  .h-24 {
+    height: calc(var(--spacing) * 24);
+  }
+  .h-32 {
+    height: calc(var(--spacing) * 32);
+  }
+  .h-36 {
+    height: calc(var(--spacing) * 36);
+  }
+  .h-fit {
+    height: fit-content;
   }
   .h-screen {
     height: 100vh;
@@ -763,6 +784,9 @@
   }
   .w-80 {
     width: calc(var(--spacing) * 80);
+  }
+  .w-auto {
+    width: auto;
   }
   .w-full {
     width: 100%;
@@ -858,6 +882,9 @@
   .bg-red-500 {
     background-color: var(--color-red-500);
   }
+  .bg-transparent {
+    background-color: transparent;
+  }
   .bg-warning {
     background-color: var(--color-warning);
   }
@@ -887,6 +914,9 @@
   }
   .px-1 {
     padding-inline: calc(var(--spacing) * 1);
+  }
+  .px-4 {
+    padding-inline: calc(var(--spacing) * 4);
   }
   .text-3xl {
     font-size: var(--text-3xl);
@@ -1041,6 +1071,56 @@
   .btn-warning {
     --btn-color: var(--color-warning);
     --btn-fg: var(--color-warning-content);
+  }
+  .outline-none {
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+  .hover\:bg-transparent {
+    &:hover {
+      @media (hover: hover) {
+        background-color: transparent;
+      }
+    }
+  }
+  .hover\:no-underline {
+    &:hover {
+      @media (hover: hover) {
+        text-decoration-line: none;
+      }
+    }
+  }
+  .hover\:outline-0 {
+    &:hover {
+      @media (hover: hover) {
+        outline-style: var(--tw-outline-style);
+        outline-width: 0px;
+      }
+    }
+  }
+  .hover\:outline-none {
+    &:hover {
+      @media (hover: hover) {
+        --tw-outline-style: none;
+        outline-style: none;
+      }
+    }
+  }
+  .focus\:no-underline {
+    &:focus {
+      text-decoration-line: none;
+    }
+  }
+  .focus\:outline-none {
+    &:focus {
+      --tw-outline-style: none;
+      outline-style: none;
+    }
+  }
+  .active\:no-underline {
+    &:active {
+      text-decoration-line: none;
+    }
   }
   .lg\:flex {
     @media (width >= 64rem) {
@@ -1430,6 +1510,11 @@ body {
   inherits: false;
   initial-value: 0 0 #0000;
 }
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
@@ -1450,6 +1535,7 @@ body {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-outline-style: solid;
     }
   }
 }
