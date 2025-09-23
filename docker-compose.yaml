@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres_jaikae
+      POSTGRES_PASSWORD: k~e8T5WcU2>X
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432" # Expose PostgreSQL to the host
+
+volumes:
+  db_data:
