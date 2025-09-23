@@ -22,8 +22,10 @@
       {% include 'nav.html' %}
     {% endblock %}
 
-    {% block content %}
-      <h1 class="text-3xl font-bold underline">Hello, world!</h1>
-    {% endblock %}
+    <main class="flex flex-col p-6">
+      {% block content %}
+
+      {% endblock %}
+    </main>
   </body>
 </html>
