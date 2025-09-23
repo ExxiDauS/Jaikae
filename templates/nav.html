@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="lemonade">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    {% load livereload_tags %}
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    </style>
+    {% livereload_script %}
+  </head>
+  <body>
+    <nav class="navbar bg-base-100 shadow-lg">
+      <div class="flex-1">
+        <a class="flex items-center h-16 px-4" href="/">
+            <img src="{% static 'img/Jaikae_logo_nobg.png' %}" alt="Jaikae Logo" class="h-32 w-auto object-fit-cover object-position-center">
+        </a>
+      </div>
+      <div class="flex-none">
+        <!-- Hamburger button for mobile -->
+        <div class="dropdown dropdown-end lg:hidden">
+          <label tabindex="0" class="btn btn-ghost btn-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </label>
+          <ul tabindex="0" class="menu menu-md dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 w-64 rounded-box">
+            <li class="border-b border-black">
+              <a class="text-lg" href="/">Home</a>
+            </li>
+            <li class="border-b border-black">
+              <a class="text-lg" href="/pets/">Pets</a>
+            </li>
+            <li class="border-b border-black">
+              <a class="text-lg" href="/adoptions/">Adoptions</a>
+            </li>
+            <li class="border-b border-black">
+              <a class="text-lg" href="/vaccines/">Vaccines</a>
+            </li>
+            {% comment %}Login Register Buttons (Mobile){% endcomment %}
+            {% if user.is_authenticated %}
+              <div class="mt-2">
+                <div class="flex flex-row gap-2 w-full">
+                  <a class="btn btn-outline btn-secondary btn-sm flex-1 text-black" href="/users/register/">Register</a>
+                  <a class="btn btn-primary btn-sm flex-1 text-white" href="/users/login/">Login</a>
+                </div>
+              </div>
+              {% comment %}User Profile{% endcomment %}
+            {% else %}
+              <div class="mt-4 flex items-center gap-3">
+                {% if user.is_authenticated and user.profile.avatar %}
+                  <div class="avatar">
+                    <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                      <img src="{{ user.profile.avatar.url }}" alt="User" />
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="avatar avatar-placeholder">
+                    <div class="bg-neutral text-neutral-content w-12 rounded-full">
+                      <span class="font-bold">JD</span>
+                    </div>
+                  </div>
+                {% endif %}
+                <div class="flex flex-col">
+                  <span class="font-semibold text-base">John Doe</span>
+                  <span class="text-xs text-gray-500">john.doe@email.com</span>
+                </div>
+              </div>
+              <div>
+                <div class="flex flex-row gap-2 w-full mt-4">
+                  <a class="btn btn-error btn-sm flex-1 text-red-600" href="/users/logout/">Logout</a>
+                  <a class="btn btn-primary btn-sm flex-1 text-white" href="/users/profile/">Profile</a>
+                </div>
+              </div>
+            {% endif %}
+          </ul>
+        </div>
+        <!-- Horizontal menu for desktop -->
+        <ul class="menu menu-horizontal px-1 hidden lg:flex items-center">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/pets/">Pets</a>
+          </li>
+          <li>
+            <a href="/adoptions/">Adoptions</a>
+          </li>
+          <li>
+            <a href="/vaccines/">Vaccines</a>
+          </li>
+          {% comment %}Login Register Buttons{% endcomment %}
+          {% if user.is_authenticated %}
+            <div class="mt-2">
+              <div class="flex flex-row gap-2 w-full">
+                <a class="btn btn-outline btn-secondary btn-sm flex-1 text-black" href="/users/register/">Register</a>
+                <a class="btn btn-primary btn-sm flex-1 text-white" href="/users/login/">Login</a>
+              </div>
+            </div>
+            {% comment %}User Profile{% endcomment %}
+          {% else %}
+            <div class="dropdown dropdown-end ml-4">
+              <label tabindex="0" class="btn btn-ghost btn-circle">
+                {% if user.is_authenticated and user.profile.avatar %}
+                  <div class="avatar avatar-placeholder">
+                    <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                      <img src="{{ user.profile.avatar.url }}" alt="User" />
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="avatar avatar-placeholder">
+                    <div class="bg-neutral text-neutral-content w-10 rounded-full">
+                      <span>JD</span>
+                    </div>
+                  </div>
+                {% endif %}
+              </label>
+              <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 w-64 rounded-box">
+                <div class="mb-2 flex flex-col items-center">
+                  {% if user.is_authenticated and user.profile.avatar %}
+                    <div class="avatar mb-2">
+                      <div class="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <img src="{{ user.profile.avatar.url }}" alt="User" />
+                      </div>
+                    </div>
+                  {% else %}
+                    <div class="avatar avatar-placeholder mb-2">
+                      <div class="bg-neutral text-neutral-content w-16 rounded-full flex items-center justify-center">
+                        <span class="font-bold text-lg">JD</span>
+                      </div>
+                    </div>
+                  {% endif %}
+                  <span class="font-semibold text-base">John Doe</span>
+                  <span class="text-xs text-gray-500">john.doe@email.com</span>
+                </div>
+                <div class="flex flex-row gap-2 w-full mt-2">
+                  <a class="btn btn-error btn-sm flex-1 text-red-600" href="/users/logout/">Logout</a>
+                  <a class="btn btn-primary btn-sm flex-1 text-white" href="/users/profile/">Profile</a>
+                </div>
+              </ul>
+            </div>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </body>
+</html>

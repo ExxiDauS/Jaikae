@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="lemonade">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        Jaikae
+      {% endblock %}
+    </title>
+
+    {% load static %}
+    {% load livereload_tags %}
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    </style>
+    {% livereload_script %}
+  </head>
+  <body class="bg-warning/20 h-screen">
+    {% block navbar %}
+      {% include 'nav.html' %}
+    {% endblock %}
+
+    <main class="flex flex-col p-6">
+      {% block content %}
+
+      {% endblock %}
+    </main>
+  </body>
+</html>
