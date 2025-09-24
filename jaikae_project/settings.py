@@ -170,3 +170,4 @@ LOGIN_REDIRECT_URL = "/"
 ACCOUNT_FORMS = {
   'signup': 'users.forms.CustomSignUpForm'
 }
+ALLOWED_HOSTS=['*']
