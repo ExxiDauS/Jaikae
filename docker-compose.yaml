@@ -1,4 +1,9 @@
 services:
+  web-app:
+    image: jaikae-app:latest
+    restart: always
+    ports:
+      - "8000:8000"
   db:
     image: postgres
     restart: always
