@@ -24,15 +24,15 @@ services:
     expose:
       - 8000
     environment:
-      - DATABASE_USERNAME: ${DATABASE_USERNAME}
-      - DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
   db:
     image: postgres
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: postgres_jaikae
-      POSTGRES_PASSWORD: k~e8T5WcU2>X
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
