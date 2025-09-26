@@ -41,98 +41,200 @@
               Filters
             </h2>
 
-            <form method="get" action="">
-              <!-- Search -->
-              <div class="form-control">
+            <form method="get" action="" class="flex flex-col gap-2">
+              <!-- Search Name -->
+              <div>
                 <label class="label"><span class="label-text font-medium">Search by name</span></label>
-                <input type="text" placeholder="Enter pet name..." class="input input-bordered input-sm" />
+                <input type="text" name="name" placeholder="Enter pet name..." value="{{ filters.name }}" class="input input-bordered input-sm" />
+              </div>
+
+              <!-- Sort by -->
+              <div>
+                <label class="label"><span class="label-text font-medium">Sort by</span></label>
+                <select name="sort_by" class="select select-bordered select-sm">
+                  {% if not sort_by or sort_by == 'newest' or sort_by == '' %}
+                    <option value="newest" selected>Sort by: Newest</option>
+                  {% else %}
+                    <option value="newest">Sort by: Newest</option>
+                  {% endif %}
+
+                  {% if sort_by == 'oldest' %}
+                    <option value="oldest" selected>Sort by: Oldest</option>
+                  {% else %}
+                    <option value="oldest">Sort by: Oldest</option>
+                  {% endif %}
+
+                  {% if sort_by == 'name_az' %}
+                    <option value="name_az" selected>Sort by: Name A-Z</option>
+                  {% else %}
+                    <option value="name_az">Sort by: Name A-Z</option>
+                  {% endif %}
+
+                  {% if sort_by == 'name_za' %}
+                    <option value="name_za" selected>Sort by: Name Z-A</option>
+                  {% else %}
+                    <option value="name_za">Sort by: Name Z-A</option>
+                  {% endif %}
+
+                  {% if sort_by == 'price_low_high' %}
+                    <option value="price_low_high" selected>Sort by: Price Low-High</option>
+                  {% else %}
+                    <option value="price_low_high">Sort by: Price Low-High</option>
+                  {% endif %}
+
+                  {% if sort_by == 'price_high_low' %}
+                    <option value="price_high_low" selected>Sort by: Price High-Low</option>
+                  {% else %}
+                    <option value="price_high_low">Sort by: Price High-Low</option>
+                  {% endif %}
+                </select>
               </div>
 
               <!-- Species -->
-              <div class="form-control">
+              <div>
                 <label class="label"><span class="label-text font-medium">Species</span></label>
-                <select class="select select-bordered select-sm">
-                  <option value="">All Species</option>
-                  <option value="Dog">Dog</option>
-                  <option value="Cat">Cat</option>
-                  <option value="Rabbit">Rabbit</option>
-                  <option value="Bird">Bird</option>
-                  <option value="Fish">Fish</option>
-                  <option value="Hamster">Hamster</option>
+                <select name="species" class="select select-bordered select-sm">
+                  {% if not filters.species %}
+                    <option value="" selected>All Species</option>
+                  {% else %}
+                    <option value="">All Species</option>
+                  {% endif %}
+
+                  {% if filters.species == 'Dog' %}
+                    <option value="Dog" selected>Dog</option>
+                  {% else %}
+                    <option value="Dog">Dog</option>
+                  {% endif %}
+
+                  {% if filters.species == 'Cat' %}
+                    <option value="Cat" selected>Cat</option>
+                  {% else %}
+                    <option value="Cat">Cat</option>
+                  {% endif %}
+
+                  {% if filters.species == 'Rabbit' %}
+                    <option value="Rabbit" selected>Rabbit</option>
+                  {% else %}
+                    <option value="Rabbit">Rabbit</option>
+                  {% endif %}
                 </select>
               </div>
 
               <!-- Gender -->
-              <div class="form-control">
+              <div>
                 <label class="label"><span class="label-text font-medium">Gender</span></label>
                 <div class="flex gap-4">
-                  <label class="label cursor-pointer">
-                    <input type="radio" name="gender" class="radio radio-primary radio-sm" value="" checked />
-                    <span class="label-text ml-2">Any</span>
-                  </label>
-                  <label class="label cursor-pointer">
-                    <input type="radio" name="gender" class="radio radio-primary radio-sm" value="Male" />
-                    <span class="label-text ml-2">Male</span>
-                  </label>
-                  <label class="label cursor-pointer">
-                    <input type="radio" name="gender" class="radio radio-primary radio-sm" value="Female" />
-                    <span class="label-text ml-2">Female</span>
-                  </label>
+                  {% if not filters.gender or filters.gender == '' %}
+                    <label class="label cursor-pointer">
+                      <input type="radio" name="gender" value="" class="radio radio-primary radio-sm" checked />
+                      <span class="label-text ml-2">Any</span>
+                    </label>
+                  {% else %}
+                    <label class="label cursor-pointer">
+                      <input type="radio" name="gender" value="" class="radio radio-primary radio-sm" />
+                      <span class="label-text ml-2">Any</span>
+                    </label>
+                  {% endif %}
+                  {% if filters.gender == 'Male' %}
+                    <label class="label cursor-pointer">
+                      <input type="radio" name="gender" value="Male" class="radio radio-primary radio-sm" checked />
+                      <span class="label-text ml-2">Male</span>
+                    </label>
+                  {% else %}
+                    <label class="label cursor-pointer">
+                      <input type="radio" name="gender" value="Male" class="radio radio-primary radio-sm" />
+                      <span class="label-text ml-2">Male</span>
+                    </label>
+                  {% endif %}
+
+                  {% if filters.gender == 'Female' %}
+                    <label class="label cursor-pointer">
+                      <input type="radio" name="gender" value="Female" class="radio radio-primary radio-sm" checked />
+                      <span class="label-text ml-2">Female</span>
+                    </label>
+                  {% else %}
+                    <label class="label cursor-pointer">
+                      <input type="radio" name="gender" value="Female" class="radio radio-primary radio-sm" />
+                      <span class="label-text ml-2">Female</span>
+                    </label>
+                  {% endif %}
                 </div>
               </div>
 
               <!-- Age Range -->
-              <div class="form-control">
+              <div>
                 <label class="label"><span class="label-text font-medium">Age Range</span></label>
                 <div class="grid grid-cols-2 gap-2">
-                  <input type="number" name="min_age" placeholder="Min" class="input input-bordered input-sm" min="0" />
-                  <input type="number" name="max_age" placeholder="Max" class="input input-bordered input-sm" min="0" />
+                  {% if filters.age__gte %}
+                    <input type="number" name="min_age" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.age__gte }}" />
+                  {% else %}
+                    <input type="number" name="min_age" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" />
+                  {% endif %}
+
+                  {% if filters.age__lte %}
+                    <input type="number" name="max_age" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.age__lte }}" />
+                  {% else %}
+                    <input type="number" name="max_age" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" />
+                  {% endif %}
                 </div>
               </div>
 
               <!-- Weight Range -->
-              <div class="form-control">
+              <div>
                 <label class="label"><span class="label-text font-medium">Weight (kg)</span></label>
                 <div class="grid grid-cols-2 gap-2">
-                  <input type="number" name="min_weight" placeholder="Min" class="input input-bordered input-sm" min="0" step="0.1" />
-                  <input type="number" name="max_weight" placeholder="Max" class="input input-bordered input-sm" min="0" step="0.1" />
+                  {% if filters.weight__gte %}
+                    <input type="number" name="min_weight" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.weight__gte }}" />
+                  {% else %}
+                    <input type="number" name="min_weight" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" />
+                  {% endif %}
+
+                  {% if filters.weight__lte %}
+                    <input type="number" name="max_weight" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.weight__lte }}" />
+                  {% else %}
+                    <input type="number" name="max_weight" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" />
+                  {% endif %}
                 </div>
               </div>
 
               <!-- Adoption Fee Range -->
-              <div class="form-control">
+              <div>
                 <label class="label"><span class="label-text font-medium">Adoption Fee ($)</span></label>
                 <div class="grid grid-cols-2 gap-2">
-                  <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" />
-                  <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" />
+                  {% if filters.adoption_fee__gte %}
+                    <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" value="{{ filters.adoption_fee__gte }}" />
+                  {% else %}
+                    <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" />
+                  {% endif %}
+
+                  {% if filters.adoption_fee__lte %}
+                    <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" value="{{ filters.adoption_fee__lte }}" />
+                  {% else %}
+                    <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" />
+                  {% endif %}
                 </div>
               </div>
 
-              <!-- Special Features -->
-              <div class="form-control">
-                <label class="label"><span class="label-text font-medium">Special Features</span></label>
-                <div class="space-y-2">
-                  <label class="label cursor-pointer justify-start">
-                    <input type="checkbox" name="special_features" value="vaccinated" class="checkbox checkbox-primary checkbox-sm" />
-                    <span class="label-text ml-3">Vaccinated</span>
-                  </label>
-                  <label class="label cursor-pointer justify-start">
-                    <input type="checkbox" name="special_features" value="good_with_kids" class="checkbox checkbox-primary checkbox-sm" />
-                    <span class="label-text ml-3">Good with kids</span>
-                  </label>
-                  <label class="label cursor-pointer justify-start">
-                    <input type="checkbox" name="special_features" value="good_with_pets" class="checkbox checkbox-primary checkbox-sm" />
-                    <span class="label-text ml-3">Good with pets</span>
-                  </label>
-                  <label class="label cursor-pointer justify-start">
-                    <input type="checkbox" name="special_features" value="house_trained" class="checkbox checkbox-primary checkbox-sm" />
-                    <span class="label-text ml-3">House trained</span>
-                  </label>
+              <!-- Vaccinated -->
+              <div>
+                <label class="label"><span class="label-text font-medium">Vaccinated</span></label>
+                <div class="mt-2">
+                  {% if filters.vaccinated %}
+                    <label class="label cursor-pointer justify-start">
+                      <input type="checkbox" name="vaccinated" value="vaccinated" class="checkbox checkbox-primary checkbox-sm text-white" checked />
+                      <span class="label-text ml-3">Vaccinated</span>
+                    </label>
+                  {% else %}
+                    <label class="label cursor-pointer justify-start">
+                      <input type="checkbox" name="vaccinated" value="vaccinated" class="checkbox checkbox-primary checkbox-sm text-white" />
+                      <span class="label-text ml-3">Vaccinated</span>
+                    </label>
+                  {% endif %}
                 </div>
               </div>
 
               <!-- Filter Actions -->
-              <div class="flex gap-2 mt-4">
+              <div class="flex gap-2 mt-2">
                 <button type="submit" class="btn btn-primary btn-sm flex-1 text-white">Apply Filters</button>
                 <a href="{% url 'pets' %}" class="btn btn-outline btn-sm">Clear</a>
               </div>
@@ -148,14 +250,6 @@
           <div class="text-base-content/70">
             <span class="font-medium">24 pets</span> available for adoption
           </div>
-          <select class="select select-bordered select-sm">
-            <option>Sort by: Newest</option>
-            <option>Sort by: Oldest</option>
-            <option>Sort by: Name A-Z</option>
-            <option>Sort by: Name Z-A</option>
-            <option>Sort by: Price Low-High</option>
-            <option>Sort by: Price High-Low</option>
-          </select>
         </div>
 
         <!-- Pet Cards Grid -->
