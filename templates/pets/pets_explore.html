@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Jaikae - Pets Explore
+{% endblock %}
+
+{% block content %}
+  <!-- Header -->
+  <div class="navbar bg-primary text-primary-content shadow-lg">
+    <div class="flex-1">
+      <a class="btn btn-ghost text-xl">
+        <i class="fas fa-paw"></i>
+        PetAdopt
+      </a>
+    </div>
+    <div class="flex-none">
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+          <div class="w-10 rounded-full">
+            <i class="fas fa-user text-lg"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- Page Title -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-primary mb-2">Find Your Perfect Companion</h1>
+      <p class="text-lg text-base-content/70">Discover amazing pets looking for their forever homes</p>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Filter Sidebar -->
+      <div class="lg:w-1/4">
+        <div class="card bg-base-200 shadow-md">
+          <div class="card-body">
+            <h2 class="card-title text-primary">
+              <i class="fas fa-filter"></i>
+              Filters
+            </h2>
+
+            <form method="get" action="">
+              <!-- Search -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Search by name</span></label>
+                <input type="text" placeholder="Enter pet name..." class="input input-bordered input-sm" />
+              </div>
+
+              <!-- Species -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Species</span></label>
+                <select class="select select-bordered select-sm">
+                  <option value="">All Species</option>
+                  <option value="Dog">Dog</option>
+                  <option value="Cat">Cat</option>
+                  <option value="Rabbit">Rabbit</option>
+                  <option value="Bird">Bird</option>
+                  <option value="Fish">Fish</option>
+                  <option value="Hamster">Hamster</option>
+                </select>
+              </div>
+
+              <!-- Gender -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Gender</span></label>
+                <div class="flex gap-4">
+                  <label class="label cursor-pointer">
+                    <input type="radio" name="gender" class="radio radio-primary radio-sm" value="" checked />
+                    <span class="label-text ml-2">Any</span>
+                  </label>
+                  <label class="label cursor-pointer">
+                    <input type="radio" name="gender" class="radio radio-primary radio-sm" value="Male" />
+                    <span class="label-text ml-2">Male</span>
+                  </label>
+                  <label class="label cursor-pointer">
+                    <input type="radio" name="gender" class="radio radio-primary radio-sm" value="Female" />
+                    <span class="label-text ml-2">Female</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Age Range -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Age Range</span></label>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="number" name="min_age" placeholder="Min" class="input input-bordered input-sm" min="0" />
+                  <input type="number" name="max_age" placeholder="Max" class="input input-bordered input-sm" min="0" />
+                </div>
+              </div>
+
+              <!-- Weight Range -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Weight (kg)</span></label>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="number" name="min_weight" placeholder="Min" class="input input-bordered input-sm" min="0" step="0.1" />
+                  <input type="number" name="max_weight" placeholder="Max" class="input input-bordered input-sm" min="0" step="0.1" />
+                </div>
+              </div>
+
+              <!-- Adoption Fee Range -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Adoption Fee ($)</span></label>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" />
+                  <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" />
+                </div>
+              </div>
+
+              <!-- Special Features -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Special Features</span></label>
+                <div class="space-y-2">
+                  <label class="label cursor-pointer justify-start">
+                    <input type="checkbox" name="special_features" value="vaccinated" class="checkbox checkbox-primary checkbox-sm" />
+                    <span class="label-text ml-3">Vaccinated</span>
+                  </label>
+                  <label class="label cursor-pointer justify-start">
+                    <input type="checkbox" name="special_features" value="good_with_kids" class="checkbox checkbox-primary checkbox-sm" />
+                    <span class="label-text ml-3">Good with kids</span>
+                  </label>
+                  <label class="label cursor-pointer justify-start">
+                    <input type="checkbox" name="special_features" value="good_with_pets" class="checkbox checkbox-primary checkbox-sm" />
+                    <span class="label-text ml-3">Good with pets</span>
+                  </label>
+                  <label class="label cursor-pointer justify-start">
+                    <input type="checkbox" name="special_features" value="house_trained" class="checkbox checkbox-primary checkbox-sm" />
+                    <span class="label-text ml-3">House trained</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Filter Actions -->
+              <div class="flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-sm flex-1 text-white">Apply Filters</button>
+                <a href="{% url 'pets' %}" class="btn btn-outline btn-sm">Clear</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet Cards Grid -->
+      <div class="lg:w-3/4">
+        <!-- Results Info -->
+        <div class="flex justify-between items-center mb-6">
+          <div class="text-base-content/70">
+            <span class="font-medium">24 pets</span> available for adoption
+          </div>
+          <select class="select select-bordered select-sm">
+            <option>Sort by: Newest</option>
+            <option>Sort by: Oldest</option>
+            <option>Sort by: Name A-Z</option>
+            <option>Sort by: Name Z-A</option>
+            <option>Sort by: Price Low-High</option>
+            <option>Sort by: Price High-Low</option>
+          </select>
+        </div>
+
+        <!-- Pet Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- Pet Card 1 -->
+          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <figure class="relative">
+              <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop" alt="Buddy" class="h-48 w-full object-cover" />
+              <button class="btn btn-circle btn-sm btn-ghost absolute top-2 right-2 text-red-500"><i class="fas fa-heart"></i></button>
+              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title text-primary">Buddy<div class="badge badge-secondary">2 years</div></h2>
+              <div class="text-sm space-y-1">
+                <div>
+                  <i class="fas fa-paw text-primary"></i> Golden Retriever
+                </div>
+                <div>
+                  <i class="fas fa-venus-mars text-primary"></i> Male
+                </div>
+                <div>
+                  <i class="fas fa-palette text-primary"></i> Golden
+                </div>
+                <div>
+                  <i class="fas fa-weight text-primary"></i> 25.5 kg
+                </div>
+              </div>
+              <p class="text-sm text-base-content/70 mt-2">Friendly and energetic dog looking for an active family. Loves playing fetch!</p>
+              <div class="card-actions justify-between items-center mt-4">
+                <div class="text-lg font-bold text-primary">$150</div>
+                <a href="/pets/1/" class="btn btn-primary btn-sm text-white">Learn More</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pet Card 2 -->
+          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <figure class="relative">
+              <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=300&fit=crop" alt="Luna" class="h-48 w-full object-cover" />
+              <button class="btn btn-circle btn-sm btn-ghost absolute top-2 right-2"><i class="far fa-heart"></i></button>
+              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title text-primary">Luna<div class="badge badge-secondary">1 year</div></h2>
+              <div class="text-sm space-y-1">
+                <div>
+                  <i class="fas fa-paw text-primary"></i> Persian Cat
+                </div>
+                <div>
+                  <i class="fas fa-venus-mars text-primary"></i> Female
+                </div>
+                <div>
+                  <i class="fas fa-palette text-primary"></i> White
+                </div>
+                <div>
+                  <i class="fas fa-weight text-primary"></i> 3.2 kg
+                </div>
+              </div>
+              <p class="text-sm text-base-content/70 mt-2">Calm and affectionate cat who loves to cuddle and watch the world go by.</p>
+              <div class="card-actions justify-between items-center mt-4">
+                <div class="text-lg font-bold text-primary">$200</div>
+                <a href="/pets/2/" class="btn btn-primary btn-sm text-white">Learn More</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pet Card 3 -->
+          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <figure class="relative">
+              <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&h=300&fit=crop" alt="Charlie" class="h-48 w-full object-cover" />
+              <button class="btn btn-circle btn-sm btn-ghost absolute top-2 right-2"><i class="far fa-heart"></i></button>
+              <div class="badge badge-warning absolute bottom-2 left-2">Pending</div>
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title text-primary">Charlie<div class="badge badge-secondary">3 years</div></h2>
+              <div class="text-sm space-y-1">
+                <div>
+                  <i class="fas fa-paw text-primary"></i> Holland Lop
+                </div>
+                <div>
+                  <i class="fas fa-venus-mars text-primary"></i> Male
+                </div>
+                <div>
+                  <i class="fas fa-palette text-primary"></i> Brown & White
+                </div>
+                <div>
+                  <i class="fas fa-weight text-primary"></i> 1.8 kg
+                </div>
+              </div>
+              <p class="text-sm text-base-content/70 mt-2">Gentle rabbit who enjoys being petted and is great with children.</p>
+              <div class="card-actions justify-between items-center mt-4">
+                <div class="text-lg font-bold text-primary">$75</div>
+                <a href="/pets/3/" class="btn btn-primary btn-sm text-white">Learn More</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pet Card 4 -->
+          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <figure class="relative">
+              <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=300&fit=crop" alt="Max" class="h-48 w-full object-cover" />
+              <button class="btn btn-circle btn-sm btn-ghost absolute top-2 right-2 text-red-500"><i class="fas fa-heart"></i></button>
+              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title text-primary">Max<div class="badge badge-secondary">4 years</div></h2>
+              <div class="text-sm space-y-1">
+                <div>
+                  <i class="fas fa-paw text-primary"></i> German Shepherd
+                </div>
+                <div>
+                  <i class="fas fa-venus-mars text-primary"></i> Male
+                </div>
+                <div>
+                  <i class="fas fa-palette text-primary"></i> Black & Tan
+                </div>
+                <div>
+                  <i class="fas fa-weight text-primary"></i> 32.0 kg
+                </div>
+              </div>
+              <p class="text-sm text-base-content/70 mt-2">Well-trained and loyal companion. Perfect guard dog and family protector.</p>
+              <div class="card-actions justify-between items-center mt-4">
+                <div class="text-lg font-bold text-primary">$250</div>
+                <a href="/pets/4/" class="btn btn-primary btn-sm text-white">Learn More</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pet Card 5 -->
+          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <figure class="relative">
+              <img src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=300&fit=crop" alt="Bella" class="h-48 w-full object-cover" />
+              <button class="btn btn-circle btn-sm btn-ghost absolute top-2 right-2"><i class="far fa-heart"></i></button>
+              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title text-primary">Bella<div class="badge badge-secondary">6 months</div></h2>
+              <div class="text-sm space-y-1">
+                <div>
+                  <i class="fas fa-paw text-primary"></i> Maine Coon
+                </div>
+                <div>
+                  <i class="fas fa-venus-mars text-primary"></i> Female
+                </div>
+                <div>
+                  <i class="fas fa-palette text-primary"></i> Orange Tabby
+                </div>
+                <div>
+                  <i class="fas fa-weight text-primary"></i> 2.1 kg
+                </div>
+              </div>
+              <p class="text-sm text-base-content/70 mt-2">Playful kitten who loves toys and is very social with other cats.</p>
+              <div class="card-actions justify-between items-center mt-4">
+                <div class="text-lg font-bold text-primary">$100</div>
+                <a href="/pets/5/" class="btn btn-primary btn-sm text-white">Learn More</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pet Card 6 -->
+          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <figure class="relative">
+              <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop" alt="Rocky" class="h-48 w-full object-cover" />
+              <button class="btn btn-circle btn-sm btn-ghost absolute top-2 right-2"><i class="far fa-heart"></i></button>
+              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title text-primary">Rocky<div class="badge badge-secondary">5 years</div></h2>
+              <div class="text-sm space-y-1">
+                <div>
+                  <i class="fas fa-paw text-primary"></i> Bulldog
+                </div>
+                <div>
+                  <i class="fas fa-venus-mars text-primary"></i> Male
+                </div>
+                <div>
+                  <i class="fas fa-palette text-primary"></i> Brindle
+                </div>
+                <div>
+                  <i class="fas fa-weight text-primary"></i> 22.7 kg
+                </div>
+              </div>
+              <p class="text-sm text-base-content/70 mt-2">Calm and gentle dog who prefers indoor activities and short walks.</p>
+              <div class="card-actions justify-between items-center mt-4">
+                <div class="text-lg font-bold text-primary">$180</div>
+                <a href="/pets/6/" class="btn btn-primary btn-sm text-white">Learn More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center mt-8">
+          <div class="join">
+            <button class="join-item btn btn-disabled">«</button>
+            <button class="join-item btn btn-active">1</button>
+            <button class="join-item btn">2</button>
+            <button class="join-item btn">3</button>
+            <button class="join-item btn">»</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer footer-center p-10 bg-primary text-primary-content mt-16">
+    <div>
+      <i class="fas fa-paw text-4xl"></i>
+      <p class="font-bold">
+        PetAdopt
+        <br />Connecting pets with loving families since 2023
+      </p>
+      <p>Copyright © 2024 - All right reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    // Add some basic interactivity for likes
+    document.querySelectorAll('.fa-heart').forEach((heart) => {
+      heart.parentElement.addEventListener('click', function (e) {
+        e.preventDefault()
+        if (heart.classList.contains('far')) {
+          heart.classList.remove('far')
+          heart.classList.add('fas')
+          heart.style.color = '#ef4444'
+        } else {
+          heart.classList.remove('fas')
+          heart.classList.add('far')
+          heart.style.color = ''
+        }
+      })
+    })
+  </script>
+{% endblock %}
