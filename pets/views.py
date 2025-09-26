@@ -8,8 +8,10 @@ from .models import Pet, PetImage
 class PetsView(View):
     def get(self, request):
         filters = {}
+
+        # Extract filter parameters from the request
         name = request.GET.get("name")
-        if name:  # Only when user typed something
+        if name:
             filters["name__icontains"] = name
 
         species = request.GET.get("species")
@@ -33,7 +35,7 @@ class PetsView(View):
             filters["weight__gte"] = min_weight
         if max_weight:
             filters["weight__lte"] = max_weight
-        
+
         min_fee = request.GET.get("min_fee")
         max_fee = request.GET.get("max_fee")
         if min_fee:
