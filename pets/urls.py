@@ -20,5 +20,6 @@ from . import views
 
 urlpatterns = [
     path("", views.PetsView.as_view(), name="pets"),
-    # path("<int:pet_id>/", views.PetDetailView.as_view(), name="pet_detail"),
+    path("<int:pet_id>/", views.PetDetailView.as_view(), name="pet_detail"),
+    path("get-breeds/", views.get_breeds, name="get_breeds"),
 ]

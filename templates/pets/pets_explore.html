@@ -17,9 +17,7 @@
       <div class="lg:w-1/4">
         <div class="card bg-base-200 shadow-md">
           <div class="card-body">
-            <h2 class="card-title text-primary">
-              Filters
-            </h2>
+            <h2 class="card-title text-primary">Filters</h2>
 
             <form method="get" action="" class="flex flex-col gap-2">
               <!-- Search Name -->
@@ -73,29 +71,31 @@
               <!-- Species -->
               <div>
                 <label class="label"><span class="label-text font-medium">Species</span></label>
-                <select name="species" class="select select-bordered select-sm">
+                <select id="species" name="species" class="select select-bordered select-sm" onchange="toggleBreedSelect()">
                   {% if not filters.species %}
                     <option value="" selected>All Species</option>
                   {% else %}
                     <option value="">All Species</option>
                   {% endif %}
 
-                  {% if filters.species == 'Dog' %}
-                    <option value="Dog" selected>Dog</option>
-                  {% else %}
-                    <option value="Dog">Dog</option>
-                  {% endif %}
+                  {% for species in species_options %}
+                    {% if filters.species == species %}
+                      <option value="{{ species }}" selected>{{ species }}</option>
+                    {% else %}
+                      <option value="{{ species }}">{{ species }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
 
-                  {% if filters.species == 'Cat' %}
-                    <option value="Cat" selected>Cat</option>
+              <!-- Breed -->
+              <div>
+                <label class="label"><span class="label-text font-medium">Breed</span></label>
+                <select id="breed" name="breed" class="select select-bordered select-sm">
+                  {% if not filters.breed %}
+                    <option value="" selected>All Breeds</option>
                   {% else %}
-                    <option value="Cat">Cat</option>
-                  {% endif %}
-
-                  {% if filters.species == 'Rabbit' %}
-                    <option value="Rabbit" selected>Rabbit</option>
-                  {% else %}
-                    <option value="Rabbit">Rabbit</option>
+                    <option value="">All Breeds</option>
                   {% endif %}
                 </select>
               </div>
@@ -143,18 +143,18 @@
 
               <!-- Age Range -->
               <div>
-                <label class="label"><span class="label-text font-medium">Age Range</span></label>
+                <label class="label"><span class="label-text font-medium">Age Range (Years)</span></label>
                 <div class="grid grid-cols-2 gap-2">
-                  {% if filters.age__gte %}
-                    <input type="number" name="min_age" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.age__gte }}" />
+                  {% if filters.min_age %}
+                    <input type="number" name="min_age" placeholder="Min" class="input input-bordered input-sm" min="0" value="{{ filters.min_age }}" />
                   {% else %}
-                    <input type="number" name="min_age" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" />
+                    <input type="number" name="min_age" placeholder="Min" class="input input-bordered input-sm" min="0" />
                   {% endif %}
 
-                  {% if filters.age__lte %}
-                    <input type="number" name="max_age" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.age__lte }}" />
+                  {% if filters.max_age %}
+                    <input type="number" name="max_age" placeholder="Max" class="input input-bordered input-sm" min="0" value="{{ filters.max_age }}" />
                   {% else %}
-                    <input type="number" name="max_age" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" />
+                    <input type="number" name="max_age" placeholder="Max" class="input input-bordered input-sm" min="0" />
                   {% endif %}
                 </div>
               </div>
@@ -163,14 +163,14 @@
               <div>
                 <label class="label"><span class="label-text font-medium">Weight (kg)</span></label>
                 <div class="grid grid-cols-2 gap-2">
-                  {% if filters.weight__gte %}
-                    <input type="number" name="min_weight" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.weight__gte }}" />
+                  {% if filters.min_weight %}
+                    <input type="number" name="min_weight" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.min_weight }}" />
                   {% else %}
                     <input type="number" name="min_weight" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" />
                   {% endif %}
 
-                  {% if filters.weight__lte %}
-                    <input type="number" name="max_weight" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.weight__lte }}" />
+                  {% if filters.max_weight %}
+                    <input type="number" name="max_weight" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.max_weight }}" />
                   {% else %}
                     <input type="number" name="max_weight" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" />
                   {% endif %}
@@ -181,14 +181,14 @@
               <div>
                 <label class="label"><span class="label-text font-medium">Adoption Fee ($)</span></label>
                 <div class="grid grid-cols-2 gap-2">
-                  {% if filters.adoption_fee__gte %}
-                    <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" value="{{ filters.adoption_fee__gte }}" />
+                  {% if filters.min_fee %}
+                    <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" value="{{ filters.min_fee }}" />
                   {% else %}
                     <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" />
                   {% endif %}
 
-                  {% if filters.adoption_fee__lte %}
-                    <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" value="{{ filters.adoption_fee__lte }}" />
+                  {% if filters.max_fee %}
+                    <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" value="{{ filters.max_fee }}" />
                   {% else %}
                     <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" />
                   {% endif %}
@@ -228,191 +228,45 @@
         <!-- Results Info -->
         <div class="flex justify-between items-center mb-6">
           <div class="text-base-content/70">
-            <span class="font-medium">24 pets</span> available for adoption
+            <span class="font-medium">{{ pets.count }}</span> pets found.
           </div>
         </div>
 
         <!-- Pet Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <!-- Pet Card 1 -->
-          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <figure class="relative">
-              <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop" alt="Buddy" class="h-48 w-full object-cover" />
-              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
-            </figure>
-            <div class="card-body">
-              <h2 class="card-title text-primary">Buddy<div class="badge badge-secondary">2 years</div></h2>
-              <div class="text-sm space-y-1">
-                <div>
-                  Golden Retriever
+          {% for pet in pets %}
+            <!-- Pet Card -->
+            <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+              <figure class="relative">
+                <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop" alt="Buddy" class="h-48 w-full object-cover" />
+                {% if pet.status == "Available" %}
+                  <div class="badge badge-success absolute bottom-2 left-2">{{ pet.status }}</div>
+                {% elif pet.status == "Pending" %}
+                  <div class="badge badge-warning absolute bottom-2 left-2">{{ pet.status }}</div>
+                {% elif pet.status == "Adopted" %}
+                  <div class="badge badge-error absolute bottom-2 left-2">{{ pet.status }}</div>
+                {% else %}
+                  <div class="badge badge-neutral absolute bottom-2 left-2">{{ pet.status }}</div>
+                {% endif %}
+              </figure>
+              <div class="card-body">
+                <h2 class="card-title text-primary">{{ pet.name }}<div class="badge badge-secondary">{{ pet.age.0 }} years {{ pet.age.1 }} months</div></h2>
+                <div class="text-sm space-y-1">
+                  <div>
+                    {{ pet.species }}{% if pet.breed %}, {{ pet.breed }}{% endif %}
+                  </div>
+                  <div>{{ pet.gender }}</div>
+                  <div>{{ pet.color }}</div>
+                  <div>{{ pet.weight }} kg</div>
                 </div>
-                <div>
-                  Male
+                <p class="text-sm text-base-content/70 mt-2">{% if pet.description %}{{ pet.description }}{% else %}No description available{% endif %}</p>
+                <div class="card-actions justify-between items-center mt-4">
+                  <div class="text-lg font-bold text-primary">${{ pet.adoption_fee }}</div>
+                  <a href="{% url 'pet_detail' pet.id %}" class="btn btn-primary btn-sm text-white">Learn More</a>
                 </div>
-                <div>
-                  Golden
-                </div>
-                <div>
-                  25.5 kg
-                </div>
-              </div>
-              <p class="text-sm text-base-content/70 mt-2">Friendly and energetic dog looking for an active family. Loves playing fetch!</p>
-              <div class="card-actions justify-between items-center mt-4">
-                <div class="text-lg font-bold text-primary">$150</div>
-                <a href="/pets/1/" class="btn btn-primary btn-sm text-white">Learn More</a>
               </div>
             </div>
-          </div>
-
-          <!-- Pet Card 2 -->
-          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <figure class="relative">
-              <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=300&fit=crop" alt="Luna" class="h-48 w-full object-cover" />
-              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
-            </figure>
-            <div class="card-body">
-              <h2 class="card-title text-primary">Luna<div class="badge badge-secondary">1 year</div></h2>
-              <div class="text-sm space-y-1">
-                <div>
-                  Persian Cat
-                </div>
-                <div>
-                  Female
-                </div>
-                <div>
-                  White
-                </div>
-                <div>
-                  3.2 kg
-                </div>
-              </div>
-              <p class="text-sm text-base-content/70 mt-2">Calm and affectionate cat who loves to cuddle and watch the world go by.</p>
-              <div class="card-actions justify-between items-center mt-4">
-                <div class="text-lg font-bold text-primary">$200</div>
-                <a href="/pets/2/" class="btn btn-primary btn-sm text-white">Learn More</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pet Card 3 -->
-          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <figure class="relative">
-              <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&h=300&fit=crop" alt="Charlie" class="h-48 w-full object-cover" />
-              <div class="badge badge-warning absolute bottom-2 left-2">Pending</div>
-            </figure>
-            <div class="card-body">
-              <h2 class="card-title text-primary">Charlie<div class="badge badge-secondary">3 years</div></h2>
-              <div class="text-sm space-y-1">
-                <div>
-                  Holland Lop
-                </div>
-                <div>
-                  Male
-                </div>
-                <div>
-                  Brown & White
-                </div>
-                <div>
-                  1.8 kg
-                </div>
-              </div>
-              <p class="text-sm text-base-content/70 mt-2">Gentle rabbit who enjoys being petted and is great with children.</p>
-              <div class="card-actions justify-between items-center mt-4">
-                <div class="text-lg font-bold text-primary">$75</div>
-                <a href="/pets/3/" class="btn btn-primary btn-sm text-white">Learn More</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pet Card 4 -->
-          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <figure class="relative">
-              <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=300&fit=crop" alt="Max" class="h-48 w-full object-cover" />
-              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
-            </figure>
-            <div class="card-body">
-              <h2 class="card-title text-primary">Max<div class="badge badge-secondary">4 years</div></h2>
-              <div class="text-sm space-y-1">
-                <div>
-                  German Shepherd
-                </div>
-                <div>
-                  Male
-                </div>
-                <div>
-                  Black & Tan
-                </div>
-                <div>
-                  32.0 kg
-                </div>
-              </div>
-              <p class="text-sm text-base-content/70 mt-2">Well-trained and loyal companion. Perfect guard dog and family protector.</p>
-              <div class="card-actions justify-between items-center mt-4">
-                <div class="text-lg font-bold text-primary">$250</div>
-                <a href="/pets/4/" class="btn btn-primary btn-sm text-white">Learn More</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pet Card 5 -->
-          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <figure class="relative">
-              <img src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=300&fit=crop" alt="Bella" class="h-48 w-full object-cover" />
-              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
-            </figure>
-            <div class="card-body">
-              <h2 class="card-title text-primary">Bella<div class="badge badge-secondary">6 months</div></h2>
-              <div class="text-sm space-y-1">
-                <div>
-                  Maine Coon
-                </div>
-                <div>
-                  Female
-                </div>
-                <div>
-                  Orange Tabby
-                </div>
-                <div>
-                  2.1 kg
-                </div>
-              </div>
-              <p class="text-sm text-base-content/70 mt-2">Playful kitten who loves toys and is very social with other cats.</p>
-              <div class="card-actions justify-between items-center mt-4">
-                <div class="text-lg font-bold text-primary">$100</div>
-                <a href="/pets/5/" class="btn btn-primary btn-sm text-white">Learn More</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pet Card 6 -->
-          <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <figure class="relative">
-              <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop" alt="Rocky" class="h-48 w-full object-cover" />
-              <div class="badge badge-success absolute bottom-2 left-2">Available</div>
-            </figure>
-            <div class="card-body">
-              <h2 class="card-title text-primary">Rocky<div class="badge badge-secondary">5 years</div></h2>
-              <div class="text-sm space-y-1">
-                <div>
-                  Bulldog
-                </div>
-                <div>
-                  Male
-                </div>
-                <div>
-                  Brindle
-                </div>
-                <div>
-                  22.7 kg
-                </div>
-              </div>
-              <p class="text-sm text-base-content/70 mt-2">Calm and gentle dog who prefers indoor activities and short walks.</p>
-              <div class="card-actions justify-between items-center mt-4">
-                <div class="text-lg font-bold text-primary">$180</div>
-                <a href="/pets/6/" class="btn btn-primary btn-sm text-white">Learn More</a>
-              </div>
-            </div>
-          </div>
+          {% endfor %}
         </div>
 
         <!-- Pagination -->
@@ -441,4 +295,58 @@
     </div>
   </footer>
 
+  <script>
+    const preselectedSpecies = "{{ filters.species|default:'' }}"
+    const preselectedBreed = "{{ filters.breed|default:'' }}"
+    
+    async function toggleBreedSelect() {
+      const speciesSelect = document.getElementById('species')
+      const breedSelect = document.getElementById('breed')
+    
+      const species = speciesSelect.value
+    
+      // reset breed dropdown
+      breedSelect.innerHTML = `<option value="">All Breeds</option>`
+    
+      if (!species) {
+        breedSelect.disabled = true
+        return
+      }
+    
+      breedSelect.disabled = false
+    
+      // fetch and populate breed options for selected species
+      try {
+        const response = await fetch(`/pets/get-breeds/?species=${species}`)
+        const data = await response.json()
+        console.log(data)
+    
+        data.breeds.forEach((breed) => {
+          const option = document.createElement('option')
+          option.value = breed
+          option.textContent = breed
+    
+          // reselect if matches filter
+          if (breed === preselectedBreed) {
+            option.selected = true
+          }
+          breedSelect.appendChild(option)
+        })
+      } catch (error) {
+        console.error('Error loading breeds:', error)
+      }
+    }
+    
+    // initialize if a species is already selected
+    window.addEventListener('DOMContentLoaded', () => {
+      const speciesSelect = document.getElementById('species')
+      const breedSelect = document.getElementById('breed')
+    
+      if (!speciesSelect.value) {
+        breedSelect.disabled = true
+      } else {
+        toggleBreedSelect()
+      }
+    })
+  </script>
 {% endblock %}
