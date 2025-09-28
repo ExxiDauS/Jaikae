@@ -3,113 +3,59 @@ from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
 from .models import Pet
-
+from .forms import PetFilterForm
 
 class PetsView(View):
-    """View for displaying and filtering pets."""
-
     def get(self, request):
-        # Parse filters
-        filters_query, filters_template = self.build_filters(request)
+        form = PetFilterForm(request.GET or None)
 
-        # Determine sorting
-        ordering = self.get_ordering(request.GET.get("sort_by"))
+        filters_query = {}
+        sort_by_value = None
+        if form.is_valid():
+            cd = form.cleaned_data
+            if cd.get("name"):
+                filters_query["name__icontains"] = cd["name"]
+            if cd.get("species"):
+                filters_query["species"] = cd["species"]
+            if cd.get("breed"):
+                filters_query["breed"] = cd["breed"]
+            if cd.get("gender"):
+                filters_query["gender"] = cd["gender"]
 
-        print("Filters Query:", filters_query)
+            # Range Filters
+            if cd.get("min_weight") is not None:
+                filters_query["weight__gte"] = cd["min_weight"]
+            if cd.get("max_weight") is not None:
+                filters_query["weight__lte"] = cd["max_weight"]
 
-        # Query pets with filters + sorting
+            if cd.get("min_fee") is not None:
+                filters_query["adoption_fee__gte"] = cd["min_fee"]
+            if cd.get("max_fee") is not None:
+                filters_query["adoption_fee__lte"] = cd["max_fee"]
+            
+            if cd.get("min_age") is not None:
+                min_dob = self.age_to_birthdate(cd["min_age"])
+                if min_dob:
+                    filters_query["dob__lte"] = min_dob  # older than min_age
+            if cd.get("max_age") is not None:
+                max_dob = self.age_to_birthdate(cd["max_age"])
+                if max_dob:
+                    filters_query["dob__gte"] = max_dob  # younger than max_age
+
+            if cd.get("vaccinated"):
+                filters_query["vaccines__isnull"] = False
+            
+            if cd.get("sort_by"):
+                sort_by_value = cd.get("sort_by")
+
+        ordering = self.get_ordering(sort_by_value)
         pets = Pet.objects.filter(**filters_query).order_by(ordering)
 
-        # Populate species dropdown filter
-        species_options = (
-            Pet.objects.values_list("species", flat=True)
-            .distinct()
-            .order_by("species")
+        return render(
+            request,
+            "pets/pets_explore.html",
+            {"form": form, "pets": pets},
         )
-
-        context = {
-            "filters": filters_template,
-            "sort_by": request.GET.get("sort_by"),
-            "species_options": species_options,
-            "pets": pets,
-        }
-
-        return render(request, "pets/pets_explore.html", context)
-
-    # -------------------------------
-    # Helpers
-    # -------------------------------
-
-    def build_filters(self, request):
-        """Build filters from request GET params."""
-        filters_query = {}
-        filters_template = {}
-
-        # Simple text/choice filters
-        simple_fields = ["name", "species", "breed", "gender"]
-        for field in simple_fields:
-            value = request.GET.get(field)
-            if value:
-                query_field = (
-                    f"{field}__icontains" if field == "name" else field
-                )
-                filters_query[query_field] = value
-                filters_template[field] = value
-
-        # Age filters (convert to dob range)
-        min_age = request.GET.get("min_age")
-        max_age = request.GET.get("max_age")
-
-        if min_age:
-            filters_query["dob__lte"] = (
-                self.age_to_birthdate(max_age)
-                if max_age
-                else self.age_to_birthdate(min_age)
-            )
-            filters_template["min_age"] = min_age
-
-        if max_age:
-            filters_query["dob__gte"] = (
-                self.age_to_birthdate(min_age)
-                if min_age
-                else self.age_to_birthdate(max_age)
-            )
-            filters_template["max_age"] = max_age
-
-        # Numeric range filters
-        self.add_range_filter(
-            request, "weight", filters_query, filters_template
-        )
-        self.add_range_filter(
-            request, "adoption_fee", filters_query, filters_template, "fee"
-        )
-
-        return filters_query, filters_template
-
-    def add_range_filter(
-        self, request, field, filters_query, filters_template, template_key=None
-    ):
-        """Helper to handle min/max filters for numeric fields."""
-        template_key = template_key or field
-
-        min_val = request.GET.get(f"min_{template_key}")
-        max_val = request.GET.get(f"max_{template_key}")
-
-        if min_val:
-            filters_query[f"{field}__gte"] = min_val
-            filters_template[f"min_{template_key}"] = min_val
-        if max_val:
-            filters_query[f"{field}__lte"] = max_val
-            filters_template[f"max_{template_key}"] = max_val
-
-    def age_to_birthdate(self, age):
-        """Convert age in years into a date of birth approximation."""
-        try:
-            age = int(age)
-            today = date.today()
-            return today - timedelta(days=age * 365)
-        except (TypeError, ValueError):
-            return None
 
     def get_ordering(self, sort_by):
         """Map sort_by param to Django ORM ordering value."""
@@ -123,6 +69,16 @@ class PetsView(View):
         }
         # Default ordering
         return sorting_map.get(sort_by, "-created_at")
+    
+    def age_to_birthdate(self, age):
+        """Convert age in years into a date of birth approximation."""
+        try:
+            age = int(age)
+            today = date.today()
+            return today - timedelta(days=age * 365)
+        except (TypeError, ValueError):
+            return None
+
 
 class PetDetailView(View):
     """View for displaying detailed information about a specific pet."""
@@ -137,6 +93,7 @@ class PetDetailView(View):
             "pet": pet,
         }
         return render(request, "pets/pet_detail.html", context)
+
 
 def get_breeds(request):
     """Return distinct breeds for a given species, excluding null/empty values."""

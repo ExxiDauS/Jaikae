@@ -19,201 +19,87 @@
           <div class="card-body">
             <h2 class="card-title text-primary">Filters</h2>
 
-            <form method="get" action="" class="flex flex-col gap-2">
-              <!-- Search Name -->
-              <div>
-                <label class="label"><span class="label-text font-medium">Search by name</span></label>
-                <input type="text" name="name" placeholder="Enter pet name..." value="{{ filters.name }}" class="input input-bordered input-sm" />
-              </div>
+            <form method="get" class="flex flex-col gap-2">
+              {% csrf_token %}
+              <div>{{ form.name.label_tag }}
+                {{ form.name }}</div>
 
-              <!-- Sort by -->
-              <div>
-                <label class="label"><span class="label-text font-medium">Sort by</span></label>
-                <select name="sort_by" class="select select-bordered select-sm">
-                  {% if not sort_by or sort_by == 'newest' or sort_by == '' %}
-                    <option value="newest" selected>Sort by: Newest</option>
-                  {% else %}
-                    <option value="newest">Sort by: Newest</option>
-                  {% endif %}
+              <div>{{ form.sort_by.label_tag }}
+                {{ form.sort_by }}</div>
 
-                  {% if sort_by == 'oldest' %}
-                    <option value="oldest" selected>Sort by: Oldest</option>
-                  {% else %}
-                    <option value="oldest">Sort by: Oldest</option>
-                  {% endif %}
+              <div>{{ form.species.label_tag }}
+                {{ form.species }}</div>
 
-                  {% if sort_by == 'name_az' %}
-                    <option value="name_az" selected>Sort by: Name A-Z</option>
-                  {% else %}
-                    <option value="name_az">Sort by: Name A-Z</option>
-                  {% endif %}
+              <div>{{ form.breed.label_tag }}
+                {{ form.breed }}</div>
 
-                  {% if sort_by == 'name_za' %}
-                    <option value="name_za" selected>Sort by: Name Z-A</option>
-                  {% else %}
-                    <option value="name_za">Sort by: Name Z-A</option>
-                  {% endif %}
-
-                  {% if sort_by == 'price_low_high' %}
-                    <option value="price_low_high" selected>Sort by: Price Low-High</option>
-                  {% else %}
-                    <option value="price_low_high">Sort by: Price Low-High</option>
-                  {% endif %}
-
-                  {% if sort_by == 'price_high_low' %}
-                    <option value="price_high_low" selected>Sort by: Price High-Low</option>
-                  {% else %}
-                    <option value="price_high_low">Sort by: Price High-Low</option>
-                  {% endif %}
-                </select>
-              </div>
-
-              <!-- Species -->
-              <div>
-                <label class="label"><span class="label-text font-medium">Species</span></label>
-                <select id="species" name="species" class="select select-bordered select-sm" onchange="toggleBreedSelect()">
-                  {% if not filters.species %}
-                    <option value="" selected>All Species</option>
-                  {% else %}
-                    <option value="">All Species</option>
-                  {% endif %}
-
-                  {% for species in species_options %}
-                    {% if filters.species == species %}
-                      <option value="{{ species }}" selected>{{ species }}</option>
-                    {% else %}
-                      <option value="{{ species }}">{{ species }}</option>
-                    {% endif %}
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Breed -->
-              <div>
-                <label class="label"><span class="label-text font-medium">Breed</span></label>
-                <select id="breed" name="breed" class="select select-bordered select-sm">
-                  {% if not filters.breed %}
-                    <option value="" selected>All Breeds</option>
-                  {% else %}
-                    <option value="">All Breeds</option>
-                  {% endif %}
-                </select>
-              </div>
-
-              <!-- Gender -->
               <div>
                 <label class="label"><span class="label-text font-medium">Gender</span></label>
-                <div class="flex gap-4">
-                  {% if not filters.gender or filters.gender == '' %}
-                    <label class="label cursor-pointer">
+                <div class="flex flex-row gap-6">
+                  <!-- Any -->
+                  {% if not form.data.gender or form.data.gender == '' %}
+                    <label class="flex items-center gap-2 cursor-pointer">
                       <input type="radio" name="gender" value="" class="radio radio-primary radio-sm" checked />
-                      <span class="label-text ml-2">Any</span>
+                      <span class="label-text">Any</span>
                     </label>
                   {% else %}
-                    <label class="label cursor-pointer">
+                    <label class="flex items-center gap-2 cursor-pointer">
                       <input type="radio" name="gender" value="" class="radio radio-primary radio-sm" />
-                      <span class="label-text ml-2">Any</span>
-                    </label>
-                  {% endif %}
-                  {% if filters.gender == 'Male' %}
-                    <label class="label cursor-pointer">
-                      <input type="radio" name="gender" value="Male" class="radio radio-primary radio-sm" checked />
-                      <span class="label-text ml-2">Male</span>
-                    </label>
-                  {% else %}
-                    <label class="label cursor-pointer">
-                      <input type="radio" name="gender" value="Male" class="radio radio-primary radio-sm" />
-                      <span class="label-text ml-2">Male</span>
+                      <span class="label-text">Any</span>
                     </label>
                   {% endif %}
 
-                  {% if filters.gender == 'Female' %}
-                    <label class="label cursor-pointer">
-                      <input type="radio" name="gender" value="Female" class="radio radio-primary radio-sm" checked />
-                      <span class="label-text ml-2">Female</span>
+                  <!-- Male -->
+                  {% if form.data.gender == 'Male' %}
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="gender" value="Male" class="radio radio-primary radio-sm" checked />
+                      <span class="label-text">Male</span>
                     </label>
                   {% else %}
-                    <label class="label cursor-pointer">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="gender" value="Male" class="radio radio-primary radio-sm" />
+                      <span class="label-text">Male</span>
+                    </label>
+                  {% endif %}
+
+                  <!-- Female -->
+                  {% if form.data.gender == 'Female' %}
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="gender" value="Female" class="radio radio-primary radio-sm" checked />
+                      <span class="label-text">Female</span>
+                    </label>
+                  {% else %}
+                    <label class="flex items-center gap-2 cursor-pointer">
                       <input type="radio" name="gender" value="Female" class="radio radio-primary radio-sm" />
-                      <span class="label-text ml-2">Female</span>
+                      <span class="label-text">Female</span>
                     </label>
                   {% endif %}
                 </div>
               </div>
 
-              <!-- Age Range -->
               <div>
                 <label class="label"><span class="label-text font-medium">Age Range (Years)</span></label>
-                <div class="grid grid-cols-2 gap-2">
-                  {% if filters.min_age %}
-                    <input type="number" name="min_age" placeholder="Min" class="input input-bordered input-sm" min="0" value="{{ filters.min_age }}" />
-                  {% else %}
-                    <input type="number" name="min_age" placeholder="Min" class="input input-bordered input-sm" min="0" />
-                  {% endif %}
-
-                  {% if filters.max_age %}
-                    <input type="number" name="max_age" placeholder="Max" class="input input-bordered input-sm" min="0" value="{{ filters.max_age }}" />
-                  {% else %}
-                    <input type="number" name="max_age" placeholder="Max" class="input input-bordered input-sm" min="0" />
-                  {% endif %}
-                </div>
+                <div class="grid grid-cols-2 gap-2">{{ form.min_age }} {{ form.max_age }}</div>
               </div>
 
-              <!-- Weight Range -->
               <div>
                 <label class="label"><span class="label-text font-medium">Weight (kg)</span></label>
-                <div class="grid grid-cols-2 gap-2">
-                  {% if filters.min_weight %}
-                    <input type="number" name="min_weight" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.min_weight }}" />
-                  {% else %}
-                    <input type="number" name="min_weight" placeholder="Min" step="0.1" class="input input-bordered input-sm" min="0" />
-                  {% endif %}
-
-                  {% if filters.max_weight %}
-                    <input type="number" name="max_weight" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" value="{{ filters.max_weight }}" />
-                  {% else %}
-                    <input type="number" name="max_weight" placeholder="Max" step="0.1" class="input input-bordered input-sm" min="0" />
-                  {% endif %}
-                </div>
+                <div class="grid grid-cols-2 gap-2">{{ form.min_weight }} {{ form.max_weight }}</div>
               </div>
 
-              <!-- Adoption Fee Range -->
               <div>
                 <label class="label"><span class="label-text font-medium">Adoption Fee ($)</span></label>
-                <div class="grid grid-cols-2 gap-2">
-                  {% if filters.min_fee %}
-                    <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" value="{{ filters.min_fee }}" />
-                  {% else %}
-                    <input type="number" name="min_fee" placeholder="Min" class="input input-bordered input-sm" min="0" />
-                  {% endif %}
-
-                  {% if filters.max_fee %}
-                    <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" value="{{ filters.max_fee }}" />
-                  {% else %}
-                    <input type="number" name="max_fee" placeholder="Max" class="input input-bordered input-sm" min="0" />
-                  {% endif %}
-                </div>
+                <div class="grid grid-cols-2 gap-2">{{ form.min_fee }} {{ form.max_fee }}</div>
               </div>
 
-              <!-- Vaccinated -->
               <div>
-                <label class="label"><span class="label-text font-medium">Vaccinated</span></label>
-                <div class="mt-2">
-                  {% if filters.vaccinated %}
-                    <label class="label cursor-pointer justify-start">
-                      <input type="checkbox" name="vaccinated" value="vaccinated" class="checkbox checkbox-primary checkbox-sm text-white" checked />
-                      <span class="label-text ml-3">Vaccinated</span>
-                    </label>
-                  {% else %}
-                    <label class="label cursor-pointer justify-start">
-                      <input type="checkbox" name="vaccinated" value="vaccinated" class="checkbox checkbox-primary checkbox-sm text-white" />
-                      <span class="label-text ml-3">Vaccinated</span>
-                    </label>
-                  {% endif %}
+                {{ form.vaccinated.label_tag }}
+                <div class="mt-2 flex gap-2 items-center">
+                  {{ form.vaccinated }}
+                  <span class="label-text">Vaccinated</span>
                 </div>
               </div>
 
-              <!-- Filter Actions -->
               <div class="flex gap-2 mt-2">
                 <button type="submit" class="btn btn-primary btn-sm flex-1 text-white">Apply Filters</button>
                 <a href="{% url 'pets' %}" class="btn btn-outline btn-sm">Clear</a>
@@ -239,11 +125,11 @@
             <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
               <figure class="relative">
                 <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop" alt="Buddy" class="h-48 w-full object-cover" />
-                {% if pet.status == "Available" %}
+                {% if pet.status == 'Available' %}
                   <div class="badge badge-success absolute bottom-2 left-2">{{ pet.status }}</div>
-                {% elif pet.status == "Pending" %}
+                {% elif pet.status == 'Pending' %}
                   <div class="badge badge-warning absolute bottom-2 left-2">{{ pet.status }}</div>
-                {% elif pet.status == "Adopted" %}
+                {% elif pet.status == 'Adopted' %}
                   <div class="badge badge-error absolute bottom-2 left-2">{{ pet.status }}</div>
                 {% else %}
                   <div class="badge badge-neutral absolute bottom-2 left-2">{{ pet.status }}</div>
@@ -253,13 +139,21 @@
                 <h2 class="card-title text-primary">{{ pet.name }}<div class="badge badge-secondary">{{ pet.age.0 }} years {{ pet.age.1 }} months</div></h2>
                 <div class="text-sm space-y-1">
                   <div>
-                    {{ pet.species }}{% if pet.breed %}, {{ pet.breed }}{% endif %}
+                    {{ pet.species }}{% if pet.breed %}
+                      , {{ pet.breed }}
+                    {% endif %}
                   </div>
                   <div>{{ pet.gender }}</div>
                   <div>{{ pet.color }}</div>
                   <div>{{ pet.weight }} kg</div>
                 </div>
-                <p class="text-sm text-base-content/70 mt-2">{% if pet.description %}{{ pet.description }}{% else %}No description available{% endif %}</p>
+                <p class="text-sm text-base-content/70 mt-2">
+                  {% if pet.description %}
+                    {{ pet.description }}
+                  {% else %}
+                    No description available
+                  {% endif %}
+                </p>
                 <div class="card-actions justify-between items-center mt-4">
                   <div class="text-lg font-bold text-primary">${{ pet.adoption_fee }}</div>
                   <a href="{% url 'pet_detail' pet.id %}" class="btn btn-primary btn-sm text-white">Learn More</a>
@@ -296,8 +190,8 @@
   </footer>
 
   <script>
-    const preselectedSpecies = "{{ filters.species|default:'' }}"
-    const preselectedBreed = "{{ filters.breed|default:'' }}"
+    const preselectedSpecies = "{{ request.GET.species|default:'' }}"
+    const preselectedBreed = "{{ request.GET.breed|default:'' }}"
     
     async function toggleBreedSelect() {
       const speciesSelect = document.getElementById('species')
@@ -319,7 +213,6 @@
       try {
         const response = await fetch(`/pets/get-breeds/?species=${species}`)
         const data = await response.json()
-        console.log(data)
     
         data.breeds.forEach((breed) => {
           const option = document.createElement('option')
