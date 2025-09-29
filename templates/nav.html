@@ -40,11 +40,11 @@
               <a class="text-lg" href="/vaccines/">Vaccines</a>
             </li>
             {% comment %}Login Register Buttons (Mobile){% endcomment %}
-            {% if user.is_authenticated %}
+            {% if not user.is_authenticated %}
               <div class="mt-2">
                 <div class="flex flex-row gap-2 w-full">
-                  <a class="btn btn-outline btn-secondary btn-sm flex-1 text-black" href="/users/register/">Register</a>
-                  <a class="btn btn-primary btn-sm flex-1 text-white" href="/users/login/">Login</a>
+                  <a class="btn btn-outline btn-secondary btn-sm flex-1 text-black" href="{% url 'account_signup' %}">Register</a>
+                  <a class="btn btn-primary btn-sm flex-1 text-white" href="{% url 'account_login' %}">Login</a>
                 </div>
               </div>
               {% comment %}User Profile{% endcomment %}
@@ -71,7 +71,7 @@
               <div>
                 <div class="flex flex-row gap-2 w-full mt-4">
                   <a class="btn btn-error btn-sm flex-1 text-red-600" href="/users/logout/">Logout</a>
-                  <a class="btn btn-primary btn-sm flex-1 text-white" href="/users/profile/">Profile</a>
+                  <a class="btn btn-primary btn-sm flex-1 text-white" href="/account/profile/">Profile</a>
                 </div>
               </div>
             {% endif %}
@@ -92,11 +92,11 @@
             <a href="/vaccines/">Vaccines</a>
           </li>
           {% comment %}Login Register Buttons{% endcomment %}
-          {% if user.is_authenticated %}
+          {% if not user.is_authenticated %}
             <div class="mt-2">
               <div class="flex flex-row gap-2 w-full">
-                <a class="btn btn-outline btn-secondary btn-sm flex-1 text-black" href="/users/register/">Register</a>
-                <a class="btn btn-primary btn-sm flex-1 text-white" href="/users/login/">Login</a>
+                <a class="btn btn-outline btn-secondary btn-sm flex-1 text-black" href="{% url 'account_signup' %}">Register</a>
+                <a class="btn btn-primary btn-sm flex-1 text-white" href="{% url 'account_login' %}">Login</a>
               </div>
             </div>
             {% comment %}User Profile{% endcomment %}
@@ -136,7 +136,7 @@
                   <span class="text-xs text-gray-500">john.doe@email.com</span>
                 </div>
                 <div class="flex flex-row gap-2 w-full mt-2">
-                  <a class="btn btn-error btn-sm flex-1 text-red-600" href="/users/logout/">Logout</a>
+                  <a class="btn btn-error btn-sm flex-1 text-red-600" href="{% url 'account_logout' %}">Logout</a>
                   <a class="btn btn-primary btn-sm flex-1 text-white" href="/users/profile/">Profile</a>
                 </div>
               </ul>

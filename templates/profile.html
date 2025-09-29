@@ -1,0 +1,245 @@
+<!-- profile.html -->
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+  Jaikae - Profile
+{% endblock %}
+
+{% block content %}
+<div class="max-h-screen bg-base-100 py-8">
+  <div class="container mx-auto px-4 max-w-6xl">
+    
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+      <div class="avatar mb-4">
+        <div class="w-24 rounded-full {% if user_profile.profile_image %}{% else %}bg-primary text-primary-content flex items-center justify-center{% endif %} shadow-lg">
+          {% if user_profile.profile_image %}
+            <img src="{{ presigned_url }}" alt="Profile Image" class="rounded-full">
+          {% else %}
+            <span class="text-2xl font-bold">
+              {{ user.first_name|first|default:user.username|first|upper }}{{ user.last_name|first|upper }}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+      <h1 class="text-4xl font-bold mb-2">My Profile</h1>
+      <p class="text-base-content/70 text-lg">Manage your account information</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Profile Info Card -->
+      <div class="lg:col-span-1">
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h3 class="card-title text-xl mb-4">Account Info</h3>
+            
+            <div class="space-y-4">
+              <div>
+                <div class="text-sm opacity-70 font-medium">Username</div>
+                <div class="font-semibold">{{ user.username }}</div>
+              </div>
+              
+              <div>
+                <div class="text-sm opacity-70 font-medium">Email</div>
+                <div class="font-semibold">{{ user.email }}</div>
+              </div>
+              
+              <div>
+                <div class="text-sm opacity-70 font-medium">Member Since</div>
+                <div class="font-semibold">{{ user.date_joined|date:"M d, Y" }}</div>
+              </div>
+              
+              <div>
+                <div class="text-sm opacity-70 font-medium">Last Login</div>
+                <div class="font-semibold">{{ user.last_login|date:"M d, Y H:i"|default:"Never" }}</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            
+            <!-- Quick Actions -->
+            <div class="space-y-2">
+              <a href="{% url 'account_change_password' %}" class="btn btn-outline btn-secondary btn-block btn-sm">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2-2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                </svg>
+                Change Password
+              </a>
+              
+              <a href="{% url 'account_email' %}" class="btn btn-outline btn-accent btn-block btn-sm">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                </svg>
+                Manage Email
+              </a>
+              
+              <a href="{% url 'account_logout' %}" class="btn btn-outline btn-error btn-block btn-sm">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+                </svg>
+                Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Form -->
+      <div class="lg:col-span-2">
+        <div class="bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h3 class="card-title text-2xl mb-6">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+              </svg>
+              Edit Profile
+            </h3>
+            
+            <!-- Display Messages -->
+            {% if messages %}
+              <div class="mb-6">
+                {% for message in messages %}
+                  <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-error{% else %}alert-info{% endif %} mb-2">
+                    <svg class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                      {% if message.tags == 'success' %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      {% elif message.tags == 'error' %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      {% else %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      {% endif %}
+                    </svg>
+                    <span>{{ message }}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+              {% csrf_token %}
+              
+              <!-- Profile Image Upload Section -->
+              <div class="form-control">
+                <label class="label" for="id_profile_image">
+                  <span class="label-text font-semibold">Profile Image</span>
+                  <span class="label-text-alt">JPG, PNG, or WEBP (max 5MB)</span>
+                </label>
+                
+                {{ form.profile_image.errors }}
+                {% render_field form.profile_image class="file-input file-input-bordered w-full focus:file-input-primary" %}
+              </div>
+
+              <!-- Name Fields Row -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label" for="id_first_name">
+                    <span class="label-text font-semibold">First Name</span>
+                  </label>
+                  {{ form.first_name.errors }}
+                  {% render_field form.first_name placeholder="Enter your first name" class="input input-bordered w-full focus:input-primary" %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label" for="id_last_name">
+                    <span class="label-text font-semibold">Last Name</span>
+                  </label>
+                  {{ form.last_name.errors }}
+                  {% render_field form.last_name placeholder="Enter your last name" class="input input-bordered w-full focus:input-primary" %}
+                </div>
+              </div>
+
+              <!-- Phone Number -->
+              <div class="form-control">
+                <label class="label" for="id_phone_number">
+                  <span class="label-text font-semibold">Phone Number</span>
+                </label>
+                {{ form.phone_number.errors }}
+                {% render_field form.phone_number placeholder="Enter your phone number" type="tel" class="input input-bordered w-full focus:input-primary" %}
+              </div>
+
+              <!-- Address -->
+              <div class="form-control">
+                <label class="label" for="id_address">
+                  <span class="label-text font-semibold">Address</span>
+                </label>
+                {{ form.address.errors }}
+                {% render_field form.address placeholder="Enter your address" class="input input-bordered w-full focus:input-primary" %}
+              </div>
+
+              <!-- Description -->
+              <div class="form-control">
+                <label class="label" for="id_description">
+                  <span class="label-text font-semibold">About You</span>
+                  <span class="label-text-alt">Tell us about yourself and your pets</span>
+                </label>
+                {{ form.description.errors }}
+                {% render_field form.description placeholder="Tell us about yourself and your pets..." rows="4" class="textarea textarea-bordered w-full focus:textarea-primary" %}
+              </div>
+
+              <!-- Form Actions -->
+              <div class="card-actions justify-end pt-4">
+                <a href="#" class="btn btn-ghost">
+                  <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                  </svg>
+                  Cancel
+                </a>
+                
+                <button type="submit" class="btn btn-primary">
+                  <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Custom error styling for DaisyUI */
+.errorlist {
+  @apply text-error text-sm mt-1 list-none p-0;
+}
+
+.errorlist li {
+  @apply mb-1;
+}
+
+/* Focus enhancement */
+.input:focus, .textarea:focus, .file-input:focus {
+  @apply outline-offset-2;
+}
+</style>
+
+<!-- JavaScript for image preview -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('id_profile_image');
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Optional: Add client-side image preview
+                console.log('Selected file:', file.name, 'Size:', file.size);
+                
+                // Basic file validation
+                if (file.size > 5 * 1024 * 1024) { // 5MB
+                    alert('File size must be less than 5MB');
+                    this.value = '';
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
