@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "django.contrib.humanize",
     "allauth.usersessions",
+    "storages",
     # 'allauth.socialaccount.providers.google',
     # Local apps
     "users",
@@ -143,6 +144,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+STORAGES = {
+    "default": {
+        "BACKEND": "jaikae_project.storage.S3MediaStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 STATIC_URL = "/static/"
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -153,6 +163,17 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),  # Your development static files
 ]
 
+STATICFILES_LOCATION = "static"
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_USE_SSL = False
+
+AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
+MINIO_ACCESS_URL = os.getenv("MINIO_ACCESS_URL")
+
+MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

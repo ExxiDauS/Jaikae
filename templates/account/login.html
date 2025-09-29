@@ -152,4 +152,33 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rememberCheckbox = document.getElementById('id_remember');
+    const loginForm = document.getElementById('login_form');
+    
+    // Show tooltip or update label based on checkbox state
+    rememberCheckbox.addEventListener('change', function() {
+        const label = document.querySelector('label[for="id_remember"]');
+        if (this.checked) {
+            label.textContent = 'Keep me signed in for 30 days';
+            label.classList.add('text-primary');
+        } else {
+            label.textContent = 'Sign out when browser closes';
+            label.classList.remove('text-primary');
+        }
+    });
+    
+    // Store remember preference in localStorage for UX
+    if (localStorage.getItem('remember_preference') === 'true') {
+        rememberCheckbox.checked = true;
+        rememberCheckbox.dispatchEvent(new Event('change'));
+    }
+    
+    loginForm.addEventListener('submit', function() {
+        localStorage.setItem('remember_preference', rememberCheckbox.checked);
+    });
+});
+</script>
 {% endblock %}
