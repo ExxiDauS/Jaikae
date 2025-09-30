@@ -110,15 +110,99 @@ class PetFilterForm(forms.Form):
 
 
 class RegisterPetForm(forms.ModelForm):
+    GENDER_CHOICES = [
+        ('Select gender', 'Select gender'),
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+    ]
+
+    # Override the gender field to add choices
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            "class": "select select-bordered select-primary",
+        })
+    )
+
     class Meta:
         model = Pet
         fields = [
-            "name", "species", "breed", "color", "weight", "gender", "status", "description", "adoption_fee", "dob"
+            "name", "species", "breed", "color", "weight", "gender", "description", "adoption_fee", "dob"
         ]
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 4}),
-            "dob": forms.DateInput(attrs={"type": "date"}),
+            "name": forms.TextInput(attrs={
+                "class": "input input-bordered input-primary",
+                "placeholder": "e.g., Buddy, Luna, Max",
+                "required": True,
+            }),
+            "species": forms.TextInput(attrs={
+                "class": "input input-bordered input-primary",
+                "required": True,
+                "placeholder": "e.g., Dog, Cat, Rabbit",
+            }),
+            "breed": forms.TextInput(attrs={
+                "class": "input input-bordered input-primary",
+                "placeholder": "e.g., Golden Retriever, Persian",
+            }),
+            "color": forms.TextInput(attrs={
+                "class": "input input-bordered input-primary",
+                "placeholder": "e.g., Brown, Black & White",
+            }),
+            "weight": forms.NumberInput(attrs={
+                "class": "input input-bordered input-primary",
+                "placeholder": "0.0",
+                "step": "0.1",
+                "min": "0",
+            }),
+            "adoption_fee": forms.NumberInput(attrs={
+                "class": "input input-bordered input-primary",
+                "placeholder": "0.00",
+                "step": "0.01",
+                "min": "0",
+            }),
+            "dob": forms.DateInput(attrs={
+                "type": "date",
+                "class": "input input-bordered input-primary",
+            }),
+            "description": forms.Textarea(attrs={
+                "rows": 4,
+                "class": "textarea textarea-bordered textarea-primary h-32 w-full",
+                "placeholder": "Tell us about this pet's personality, habits, medical history, and any special needs...",
+            }),
         }
+        labels = {
+            "name": "Pet Name *",
+            "species": "Species *",
+            "breed": "Breed",
+            "color": "Color",
+            "weight": "Weight (kg)",
+            "gender": "Gender",
+            "adoption_fee": "Adoption Fee ($)",
+            "dob": "Date of Birth",
+            "description": "Description",
+        }
+        help_texts = {
+            "adoption_fee": "Leave empty or set to 0 if free adoption",
+            "description": "Include personality traits, training status, health information, etc.",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Add empty option to select fields
+        if 'species' in self.fields:
+            self.fields['species'].empty_label = "Select species"
+        if 'gender' in self.fields:
+            self.fields['gender'].empty_label = "Select gender"
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if not instance.status:
+            instance.status = Pet.PetStatus.AV  # enforce default
+        if commit:
+            instance.save()
+        return instance
 
 
 class PetImageForm(forms.ModelForm):
@@ -128,6 +212,15 @@ class PetImageForm(forms.ModelForm):
         widgets = {
             "pet_image": forms.FileInput(attrs={
                 "accept": "image/*",
-                "class": "file-input file-input-bordered w-full",
+                "class": "file-input file-input-bordered file-input-primary w-full mt-2",
+                "required": True,
             }),
         }
+        labels = {
+            "pet_image": "Upload Pet Image *",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Make the image field required
+        self.fields['pet_image'].required = True

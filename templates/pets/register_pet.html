@@ -6,17 +6,149 @@
 
 {% block content %}
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-primary mb-4">Register a New Pet</h1>
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-5xl font-bold text-primary mb-4">🐾 Register a New Pet</h1>
+      <p class="text-base-content/70 text-lg">Help your furry friend find their forever home</p>
+    </div>
 
-      <h2>Pet Details</h2>
-      {{ pet_form.as_p }}
+    <!-- Main Form -->
+    <div class="max-w-4xl mx-auto">
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" class="space-y-8">
+            {% csrf_token %}
 
-      <h2>Pet Image</h2>
-      {{ image_form.as_p }}
+            <!-- Pet Image Section -->
+            <div class="divider divider-primary">
+              <h2 class="text-2xl font-bold text-primary">📸 Pet Photo</h2>
+            </div>
 
-      <button type="submit" class="btn btn-primary">Save</button>
-    </form>
+            <div class="form-control w-full">
+              {{ image_form.pet_image.label_tag }}
+              {{ image_form.pet_image }}
+              {% if image_form.pet_image.errors %}
+                <label class="label"><span class="label-text-alt text-red-600">{{ image_form.pet_image.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Pet Details Section -->
+            <div class="divider divider-primary">
+              <h2 class="text-2xl font-bold text-primary">🐕 Pet Information</h2>
+            </div>
+
+            <!-- Basic Info Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Pet Name -->
+              <div class="form-control flex flex-col w-full">
+                {{ pet_form.name.label_tag }}
+                {{ pet_form.name }}
+                {% if pet_form.name.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.name.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Species -->
+              <div class="form-control flex flex-col w-full w-full">
+                {{ pet_form.species.label_tag }}
+                {{ pet_form.species }}
+                {% if pet_form.species.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.species.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Breed and Color Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Breed -->
+              <div class="form-control flex flex-col w-full">
+                {{ pet_form.breed.label_tag }}
+                {{ pet_form.breed }}
+                {% if pet_form.breed.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.breed.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Color -->
+              <div class="form-control flex flex-col w-full">
+                {{ pet_form.color.label_tag }}
+                {{ pet_form.color }}
+                {% if pet_form.color.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.color.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Physical Details Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Weight -->
+              <div class="form-control flex flex-col w-full">
+                {{ pet_form.weight.label_tag }}
+                {{ pet_form.weight }}
+                {% if pet_form.weight.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.weight.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Gender -->
+              <div class="form-control flex flex-col w-full">
+                {{ pet_form.gender.label_tag }}
+                {{ pet_form.gender }}
+                {% if pet_form.gender.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.gender.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Status and Adoption Fee Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Adoption Fee -->
+              <div class="form-control flex flex-col w-full">
+                {{ pet_form.adoption_fee.label_tag }}
+                {{ pet_form.adoption_fee }}
+                {% if pet_form.adoption_fee.help_text %}
+                  <label class="label"><span class="label-text-alt text-primary">{{ pet_form.adoption_fee.help_text }}</span></label>
+                {% endif %}
+                {% if pet_form.adoption_fee.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.adoption_fee.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Date of Birth -->
+              <div class="form-control flex flex-col w-full">
+                {{ pet_form.dob.label_tag }}
+                {{ pet_form.dob }}
+                {% if pet_form.dob.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.dob.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-control flex flex-col w-full">
+              {{ pet_form.description.label_tag }}
+              {{ pet_form.description }}
+              {% if pet_form.description.help_text %}
+                <label class="label"><span class="label-text-alt text-primary">{{ pet_form.description.help_text }}</span></label>
+              {% endif %}
+              {% if pet_form.description.errors %}
+                <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.description.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-end pt-6">
+              <a href="{% url 'pets' %}" class="btn btn-outline btn-lg w-full sm:w-auto">Cancel</a>
+              <button type="submit" class="btn btn-primary btn-lg text-white w-full sm:w-auto flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              Register Pet
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock %}
