@@ -1,9 +1,14 @@
 from datetime import date, timedelta
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from django.http import JsonResponse
 from .models import Pet
-from .forms import PetFilterForm
+from .forms import PetFilterForm, RegisterPetForm, PetImageForm
+from django.db import transaction
+from users.models import User
+from jaikae_project.utils import generate_presigned_url
+from django.core.paginator import Paginator
+
 
 class PetsView(View):
     def get(self, request):
@@ -32,7 +37,7 @@ class PetsView(View):
                 filters_query["adoption_fee__gte"] = cd["min_fee"]
             if cd.get("max_fee") is not None:
                 filters_query["adoption_fee__lte"] = cd["max_fee"]
-            
+
             if cd.get("min_age") is not None:
                 min_dob = self.age_to_birthdate(cd["min_age"])
                 if min_dob:
@@ -44,17 +49,47 @@ class PetsView(View):
 
             if cd.get("vaccinated"):
                 filters_query["vaccines__isnull"] = False
-            
+
             if cd.get("sort_by"):
                 sort_by_value = cd.get("sort_by")
 
         ordering = self.get_ordering(sort_by_value)
-        pets = Pet.objects.filter(**filters_query).order_by(ordering)
+
+        pets_qs = (
+            Pet.objects.filter(**filters_query)
+            .select_related("image")
+            .order_by(ordering)
+        )
+
+        paginator = Paginator(pets_qs, 6)  # 6 pets per page (adjust as needed)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
+        # Attach presigned URLs only for this page’s pets
+        pet_data = []
+        for pet in page_obj:
+            image_url = None
+            if getattr(pet, "image", None):
+                image_url = generate_presigned_url(str(pet.image.pet_image))
+            pet_data.append({
+                "pet": pet,
+                "image_url": image_url,
+            })
+
+        querydict = request.GET.copy()
+        if "page" in querydict:
+            querydict.pop("page")  # drop any old page query
+        filters_querystring = querydict.urlencode()
 
         return render(
             request,
             "pets/pets_explore.html",
-            {"form": form, "pets": pets},
+            {
+                "form": form,
+                "pets": pet_data,
+                "page_obj": page_obj,
+                "filters_querystring": filters_querystring,
+            },
         )
 
     def get_ordering(self, sort_by):
@@ -67,9 +102,8 @@ class PetsView(View):
             "price_low_high": "adoption_fee",
             "price_high_low": "-adoption_fee",
         }
-        # Default ordering
         return sorting_map.get(sort_by, "-created_at")
-    
+
     def age_to_birthdate(self, age):
         """Convert age in years into a date of birth approximation."""
         try:
@@ -95,6 +129,47 @@ class PetDetailView(View):
         return render(request, "pets/pet_detail.html", context)
 
 
+class RegisterPetView(View):
+    """View for registering a new pet."""
+
+    def get(self, request):
+        pet_form = RegisterPetForm()
+        image_form = PetImageForm()
+        return render(
+            request,
+            "pets/register_pet.html",
+            {"pet_form": pet_form, "image_form": image_form},
+        )
+
+    def post(self, request):
+        pet_form = RegisterPetForm(request.POST)
+        image_form = PetImageForm(request.POST, request.FILES)
+
+        if pet_form.is_valid() and image_form.is_valid():
+            with transaction.atomic():
+                # Get current user's profile
+                user_profile = User.objects.get(auth_user=request.user)
+
+                # Save Pet but don’t commit yet
+                pet = pet_form.save(commit=False)
+                pet.user = user_profile   # attach user
+                pet.save()
+
+                # Save image and link to pet
+                pet_image = image_form.save(commit=False)
+                pet_image.pet = pet
+                pet_image.save()
+
+            return redirect("pets")
+
+        # If invalid, re-render with errors
+        return render(
+            request,
+            "pets/register_pet.html",
+            {"pet_form": pet_form, "image_form": image_form},
+        )
+
+
 def get_breeds(request):
     """Return distinct breeds for a given species, excluding null/empty values."""
     species = request.GET.get("species")
@@ -105,7 +180,7 @@ def get_breeds(request):
             Pet.objects.filter(species=species)
             .exclude(breed__isnull=True)   # exclude NULL
             .exclude(breed__exact="")      # exclude empty string
-            .values_list("breed", flat=True) # get list of breed values
+            .values_list("breed", flat=True)  # get list of breed values
             .distinct()
             .order_by("breed")
         )

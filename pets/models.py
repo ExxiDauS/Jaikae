@@ -1,9 +1,8 @@
 from datetime import date
 from django.db import models
 from vaccines.models import Vaccine
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from users.models import User
+# from django.contrib.auth import get_user_model
 
 # Create your models here.
 class Pet(models.Model):
@@ -48,6 +47,6 @@ class Pet(models.Model):
         return years, months
 
 class PetImage(models.Model):
-    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='images')
-    image_unsigned_url = models.CharField(max_length=255)
+    pet = models.OneToOneField(Pet, on_delete=models.CASCADE, related_name='image')
+    pet_image = models.ImageField(upload_to='pet_images/', blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)

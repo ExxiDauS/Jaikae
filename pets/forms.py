@@ -1,6 +1,6 @@
 # pets/forms.py
 from django import forms
-from .models import Pet
+from .models import Pet, PetImage
 
 
 class PetFilterForm(forms.Form):
@@ -107,3 +107,27 @@ class PetFilterForm(forms.Form):
             ]
         else:
             self.fields["breed"].choices = [("", "All Breeds")]
+
+
+class RegisterPetForm(forms.ModelForm):
+    class Meta:
+        model = Pet
+        fields = [
+            "name", "species", "breed", "color", "weight", "gender", "status", "description", "adoption_fee", "dob"
+        ]
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 4}),
+            "dob": forms.DateInput(attrs={"type": "date"}),
+        }
+
+
+class PetImageForm(forms.ModelForm):
+    class Meta:
+        model = PetImage
+        fields = ["pet_image"]
+        widgets = {
+            "pet_image": forms.FileInput(attrs={
+                "accept": "image/*",
+                "class": "file-input file-input-bordered w-full",
+            }),
+        }
