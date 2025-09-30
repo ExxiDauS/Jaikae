@@ -115,7 +115,9 @@
           <div class="text-base-content/70">
             <span class="font-medium">{{ pets|length }}</span> pets found.
           </div>
-          <div></div>
+          <div>
+            <a href="{% url 'register_pet' %}" class="btn btn-primary btn-sm text-white">Put your pet up for adoption</a>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
