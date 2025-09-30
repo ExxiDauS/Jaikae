@@ -54,9 +54,11 @@ class PetsView(View):
                 sort_by_value = cd.get("sort_by")
 
         ordering = self.get_ordering(sort_by_value)
+        current_user = User.objects.get(auth_user=request.user)
 
         pets_qs = (
             Pet.objects.filter(**filters_query)
+            .exclude(user=current_user)
             .select_related("image")
             .order_by(ordering)
             .distinct()
