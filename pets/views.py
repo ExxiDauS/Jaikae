@@ -105,7 +105,7 @@ def get_breeds(request):
             Pet.objects.filter(species=species)
             .exclude(breed__isnull=True)   # exclude NULL
             .exclude(breed__exact="")      # exclude empty string
-            .values_list("breed", flat=True)
+            .values_list("breed", flat=True) # get list of breed values
             .distinct()
             .order_by("breed")
         )
