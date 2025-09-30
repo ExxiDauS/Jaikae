@@ -74,7 +74,7 @@ class PetFilterForm(forms.Form):
     vaccinated = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(
-            attrs={"class": "checkbox checkbox-primary checkbox-sm text-white"})
+            attrs={"class": "checkbox checkbox-primary checkbox-sm text-primary"})
     )
 
     def __init__(self, *args, **kwargs):

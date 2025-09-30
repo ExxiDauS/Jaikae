@@ -178,7 +178,7 @@
             <div class="join">
               {# Previous button #}
               {% if page_obj.has_previous %}
-               <a href="?{{ filters_querystring }}&page={{ page_obj.previous_page_number }}" class="join-item btn">«</a>
+                <a href="?{{ filters_querystring }}&page={{ page_obj.previous_page_number }}" class="join-item btn">«</a>
               {% else %}
                 <span class="join-item btn btn-disabled">«</span>
               {% endif %}
