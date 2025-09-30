@@ -59,6 +59,7 @@ class PetsView(View):
             Pet.objects.filter(**filters_query)
             .select_related("image")
             .order_by(ordering)
+            .distinct()
         )
 
         paginator = Paginator(pets_qs, 6)  # 6 pets per page (adjust as needed)
