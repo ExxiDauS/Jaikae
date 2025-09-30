@@ -1,6 +1,8 @@
+from datetime import date
 from django.db import models
-from users.models import User
 from vaccines.models import Vaccine
+from users.models import User
+# from django.contrib.auth import get_user_model
 
 # Create your models here.
 class Pet(models.Model):
@@ -24,12 +26,27 @@ class Pet(models.Model):
     adoption_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     dob = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)\
+    updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return f"{self.name} {self.species} {self.breed or ''} {self.color or ''}".strip()
+    
+    @property # make it accessible as pet.age not pet.age(), using method as attribute-like
+    def age(self):
+        """Return the pet's age as a tuple (years, months)."""
+        if not self.dob:
+            return None
+        today = date.today()
+        years = today.year - self.dob.year
+        months = today.month - self.dob.month
+        if today.day < self.dob.day:
+            months -= 1
+        if months < 0:
+            years -= 1
+            months += 12
+        return years, months
 
 class PetImage(models.Model):
-    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='images')
-    image_unsigned_url = models.CharField(max_length=255)
+    pet = models.OneToOneField(Pet, on_delete=models.CASCADE, related_name='image')
+    pet_image = models.ImageField(upload_to='pet_images/', blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
