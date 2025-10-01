@@ -213,3 +213,7 @@ ACCOUNT_SESSION_REMEMBER = True  # Allow "remember me" functionality
 ACCOUNT_REMEMBER_COOKIE_AGE = 24 * 60 * 60  # 1 day
 
 ACCOUNT_REMEMBER_COOKIE_NAME = "jaikae_remember"
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+
+CSRF_TRUSTED_ORIGINS = ["https://exxidaus.ucnil.dev"]
