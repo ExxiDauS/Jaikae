@@ -120,6 +120,12 @@
           </div>
         </div>
 
+        {% if pets|length == 0 %}
+          <div class="text-center text-base-content/70">
+            <p class="text-lg">No pets found matching your criteria.</p>
+            <p class="mt-2">Try adjusting your filters.</p>
+          </div>
+        {% else %}
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {% for item in pets %}
             <!-- Pet Card -->
@@ -178,6 +184,7 @@
             </div>
           {% endfor %}
         </div>
+        {% endif %}
 
         <!-- Pagination -->
         {% if page_obj.has_other_pages %}
