@@ -216,4 +216,4 @@ ACCOUNT_REMEMBER_COOKIE_NAME = "jaikae_remember"
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
-CSRF_TRUSTED_ORIGINS = ["https://exxidaus.ucnil.dev/"]
+CSRF_TRUSTED_ORIGINS = ["https://exxidaus.ucnil.dev"]
