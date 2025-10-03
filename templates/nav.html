@@ -31,13 +31,16 @@
               <a class="text-lg" href="/">Home</a>
             </li>
             <li class="border-b border-black">
-              <a class="text-lg" href="/pets/">Pets</a>
+              <a class="text-lg" href="{% url 'pets' %}">Pets</a>
             </li>
             <li class="border-b border-black">
               <a class="text-lg" href="/adoptions/">Adoptions</a>
             </li>
             <li class="border-b border-black">
               <a class="text-lg" href="/vaccines/">Vaccines</a>
+            </li>
+            <li class="border-b border-black">
+              <a class="text-lg" href="{% url 'my_pets' %}">My Pets</a>
             </li>
             {% comment %}Login Register Buttons (Mobile){% endcomment %}
             {% if not user.is_authenticated %}
@@ -83,13 +86,16 @@
             <a href="/">Home</a>
           </li>
           <li>
-            <a href="/pets/">Pets</a>
+            <a href="{% url 'pets' %}">Pets</a>
           </li>
           <li>
             <a href="/adoptions/">Adoptions</a>
           </li>
           <li>
             <a href="/vaccines/">Vaccines</a>
+          </li>
+          <li>
+            <a href="{% url 'my_pets' %}">My Pets</a>
           </li>
           {% comment %}Login Register Buttons{% endcomment %}
           {% if not user.is_authenticated %}
