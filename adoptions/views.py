@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import AdoptionApplication
 from .forms import AdoptionApplicationForm
 from pets.models import Pet
+from users.models import User
 
 
 @login_required
@@ -17,11 +18,12 @@ def apply_for_adoption(request, pet_id=None):
 
         if form.is_valid():
             application = form.save(commit=False)
-            application.user = request.user
+            custom_user = User.objects.get(id=request.user.id)
+            application.user = custom_user
 
             # Check duplicate
             if AdoptionApplication.objects.filter(
-                user=request.user, pet=application.pet, status="Pending"
+                user=custom_user, pet=application.pet, status="Pending"
             ).exists():
                 messages.warning(
                     request, "You already have a pending application for this pet."
@@ -46,8 +48,9 @@ def apply_for_adoption(request, pet_id=None):
 
 @login_required
 def my_applications(request):
+    custom_user = User.objects.get(id=request.user.id)
     applications = (
-        AdoptionApplication.objects.filter(user=request.user)
+        AdoptionApplication.objects.filter(user=custom_user)
         .select_related("pet")
         .order_by("-created_at")
     )
@@ -63,18 +66,16 @@ def my_applications(request):
 
 @login_required
 def manage_applications(request):
-    # Get applications for pets owned by current user
-    applications = (
-        AdoptionApplication.objects.filter(pet__owner=request.user)
-        .select_related("pet", "user")
-        .order_by("-created_at")
-    )
+    custom_user = User.objects.get(id=request.user.id)
+    my_pet = Pet.objects.filter(user=custom_user)
+    my_applications = AdoptionApplication.objects.filter(pet__in=my_pet)
+    print(request.user.id, custom_user.first_name)
 
     return render(
         request,
         "adoptions/manage_applications.html",
         {
-            "applications": applications,
+            "applications": my_applications,
         },
     )
 
@@ -133,7 +134,8 @@ def reject_application(request, pk):
 
 @login_required
 def adoption_application_detail(request, pk):
-    application = get_object_or_404(AdoptionApplication, id=pk, user=request.user)
+    custom_user = User.objects.get(id=request.user.id)
+    application = get_object_or_404(AdoptionApplication, id=pk, user=custom_user)
 
     context = {
         "application": application,

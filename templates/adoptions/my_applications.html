@@ -4,15 +4,15 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-4xl font-bold">My Applications</h1>
-    <a href="{% url 'apply_adoption' %}" class="btn btn-primary">New Application</a>
-  </div>
+  <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-primary mb-2">My Applications</h1>
+      <p class="text-lg text-base-content/70">Keep track of your adoption applications and their status.</p>
+    </div>
 
   {% if applications %}
     <div class="grid gap-6">
       {% for app in applications %}
-      <a href="{% url 'adoption_application_detail' app.id %}" class="block">
+      <a href="{% url 'adoption_application_detail' app.id %}" class="block hover:shadow-lg transition-all">
         <div class="card bg-base-100 shadow-xl">
           <div class="card-body">
             <div class="flex justify-between items-start">

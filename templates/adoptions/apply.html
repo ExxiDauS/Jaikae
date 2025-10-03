@@ -4,18 +4,13 @@
 {% block title %}Apply for Adoption{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8 max-w-2xl">
+<div class="container mx-auto px-4 py-8 max-w-3xl">
   <div class="card bg-base-100 shadow-xl">
     <div class="card-body">
       <h2 class="card-title text-3xl mb-6">
-        {% if pet %}
-          Apply to Adopt {{ pet.name }}
-        {% else %}
-          Apply for Adoption
-        {% endif %}
+        Apply to Adopt {{ pet.name }}
       </h2>
 
-      {% if pet %}
       <div class="alert alert-info mb-6">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -25,50 +20,27 @@
           <p class="text-sm">{{ pet.species }} - {{ pet.breed }}</p>
         </div>
       </div>
-      {% endif %}
 
       <form method="post" class="space-y-6">
         {% csrf_token %}
+        
+        <!-- Hidden pet field -->
+        <input type="hidden" name="pet" value="{{ pet.id }}">
+
+        <!-- Basic Information Section -->
+        <div class="divider text-lg font-semibold">Basic Information</div>
 
         <div class="form-control">
           <label class="label">
-            <span class="label-text font-semibold">Select Pet</span>
+            <span class="label-text font-semibold">
+              Why do you want to adopt {{ pet.name }}? *
+            </span>
           </label>
-          <div class="dropdown dropdown-bottom w-full">
-            <div tabindex="0" role="button" class="btn btn-outline w-full justify-between">
-              <span id="selected-pet-text">
-                {% if form.pet.value %}
-                  {% for choice in form.pet.field.choices %}
-                    {% if choice.0 == form.pet.value %}
-                      {{ choice.1 }}
-                    {% endif %}
-                  {% endfor %}
-                {% else %}
-                  Choose a pet...
-                {% endif %}
-              </span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </div>
-            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full mt-2 max-h-60 overflow-auto">
-              {% for choice in form.pet.field.choices %}
-                {% if choice.0 %}
-                  <li>
-                    <a onclick="selectPet('{{ choice.0 }}', '{{ choice.1|escapejs }}')">
-                      {{ choice.1 }}
-                    </a>
-                  </li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
-          <!-- Hidden select for form submission -->
-          {% render_field form.pet class="hidden" id="pet-select" %}
-          {% if form.pet.errors %}
+          {% render_field form.notes rows="4" placeholder="Tell us why you want to adopt this pet and what you can offer..." class="textarea textarea-bordered w-full" %}
+          {% if form.notes.errors %}
             <label class="label">
               <span class="label-text-alt text-error">
-                {{ form.pet.errors.0 }}
+                {{ form.notes.errors.0 }}
               </span>
             </label>
           {% endif %}
@@ -90,24 +62,102 @@
           {% endif %}
         </div>
 
+        <!-- Living Situation Section -->
+        <div class="divider text-lg font-semibold">Living Situation</div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Housing Type *</span>
+            </label>
+            {% render_field form.housing_type class="select select-bordered w-full" %}
+            {% if form.housing_type.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">
+                  {{ form.housing_type.errors.0 }}
+                </span>
+              </label>
+            {% endif %}
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Home Ownership *</span>
+            </label>
+            {% render_field form.home_ownership class="select select-bordered w-full" %}
+            {% if form.home_ownership.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">
+                  {{ form.home_ownership.errors.0 }}
+                </span>
+              </label>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Pet Experience Section -->
+        <div class="divider text-lg font-semibold">Pet Experience</div>
+
         <div class="form-control">
-          <label class="label">
+          <label class="label cursor-pointer justify-start gap-3">
+            {% render_field form.has_other_pets class="checkbox checkbox-primary" %}
             <span class="label-text font-semibold">
-              Why do you want to adopt this pet?
+              I have other pets
             </span>
           </label>
-          {% render_field form.notes rows="4" placeholder="Tell us why you want to adopt this pet..." class="textarea textarea-bordered w-full" %}
-          {% if form.notes.errors %}
+          {% if form.has_other_pets.errors %}
             <label class="label">
               <span class="label-text-alt text-error">
-                {{ form.notes.errors.0 }}
+                {{ form.has_other_pets.errors.0 }}
               </span>
             </label>
           {% endif %}
         </div>
 
-        <div class="card-actions justify-end gap-4">
-          <a href="{% url 'my_applications' %}" 
+        <div class="form-control" id="other-pets-details">
+          <label class="label">
+            <span class="label-text font-semibold">
+              Other Pets Details
+            </span>
+            <span class="label-text-alt text-gray-500">
+              List species, breed, age, vaccination status
+            </span>
+          </label>
+          {% render_field form.other_pets_details rows="3" placeholder="e.g., Dog - Golden Retriever, 5 years old, fully vaccinated" class="textarea textarea-bordered w-full" %}
+          {% if form.other_pets_details.errors %}
+            <label class="label">
+              <span class="label-text-alt text-error">
+                {{ form.other_pets_details.errors.0 }}
+              </span>
+            </label>
+          {% endif %}
+        </div>
+
+        <!-- Lifestyle Section -->
+        <div class="divider text-lg font-semibold">Lifestyle & Schedule</div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-semibold">
+              Work Schedule / Time at Home
+            </span>
+            <span class="label-text-alt text-gray-500">
+              e.g., Work from home, 9-5 office job
+            </span>
+          </label>
+          {% render_field form.work_schedule placeholder="Describe your typical work schedule and how much time you spend at home" class="input input-bordered w-full" %}
+          {% if form.work_schedule.errors %}
+            <label class="label">
+              <span class="label-text-alt text-error">
+                {{ form.work_schedule.errors.0 }}
+              </span>
+            </label>
+          {% endif %}
+        </div>
+
+        <!-- Form Actions -->
+        <div class="card-actions justify-end gap-4 pt-4">
+          <a href="{% url 'pet_detail' pet.id %}" 
              class="btn btn-ghost">
             Cancel
           </a>
@@ -121,11 +171,24 @@
 </div>
 
 <script>
-  function selectPet(value, text) {
-    document.getElementById('selected-pet-text').textContent = text;
-    document.getElementById('pet-select').value = value;
-    // Close dropdown by removing focus
-    document.activeElement.blur();
-  }
+  // Show/hide other pets details based on checkbox
+  document.addEventListener('DOMContentLoaded', function() {
+    const hasOtherPetsCheckbox = document.querySelector('input[name="has_other_pets"]');
+    const otherPetsDetails = document.getElementById('other-pets-details');
+    
+    function toggleOtherPetsDetails() {
+      if (hasOtherPetsCheckbox.checked) {
+        otherPetsDetails.style.display = 'block';
+      } else {
+        otherPetsDetails.style.display = 'none';
+      }
+    }
+    
+    // Initial state
+    toggleOtherPetsDetails();
+    
+    // Listen for changes
+    hasOtherPetsCheckbox.addEventListener('change', toggleOtherPetsDetails);
+  });
 </script>
 {% endblock %}
