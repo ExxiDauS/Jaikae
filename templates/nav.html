@@ -40,7 +40,7 @@
               <a class="text-lg" href="/vaccines/">Vaccines</a>
             </li>
             <li class="border-b border-black">
-              <a class="text-lg" href="/my-pets/">My Pets</a>
+              <a class="text-lg" href="{% url 'my_pets' %}">My Pets</a>
             </li>
             {% comment %}Login Register Buttons (Mobile){% endcomment %}
             {% if not user.is_authenticated %}
