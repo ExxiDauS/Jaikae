@@ -172,6 +172,122 @@ class RegisterPetView(View):
             {"pet_form": pet_form, "image_form": image_form},
         )
 
+class MyPetsView(View):
+    """View for displaying the current user's registered pets."""
+
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+
+        user_profile = User.objects.get(auth_user=request.user)
+        pets_qs = Pet.objects.filter(user=user_profile).select_related("image").order_by("-created_at")
+
+        paginator = Paginator(pets_qs, 6)  # 6 pets per page (adjust as needed)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
+        # Attach presigned URLs only for this page’s pets
+        pet_data = []
+        for pet in page_obj:
+            image_url = None
+            if getattr(pet, "image", None):
+                image_url = generate_presigned_url(str(pet.image.pet_image))
+            pet_data.append({
+                "pet": pet,
+                "image_url": image_url,
+            })
+
+        querydict = request.GET.copy()
+        if "page" in querydict:
+            querydict.pop("page")  # drop any old page query
+        filters_querystring = querydict.urlencode()
+
+        return render(
+            request,
+            "pets/my_pets.html",
+            {"pets": pet_data,
+             "page_obj": page_obj,
+            "filters_querystring": filters_querystring,},
+        )
+
+class EditPetView(View):
+    """View for editing an existing pet's details."""
+
+    def get(self, request, pet_id):
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+
+        try:
+            pet = Pet.objects.get(id=pet_id, user__auth_user=request.user)
+        except Pet.DoesNotExist:
+            return render(request, "404.html", status=404)
+
+        pet_form = RegisterPetForm(instance=pet)
+        image_form = PetImageForm(instance=getattr(pet, "image", None))
+
+        return render(
+            request,
+            "pets/edit_pet.html",
+            {"pet_form": pet_form, "image_form": image_form, "pet": pet},
+        )
+
+    def post(self, request, pet_id):
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+
+        try:
+            pet = Pet.objects.get(id=pet_id, user__auth_user=request.user)
+        except Pet.DoesNotExist:
+            return render(request, "404.html", status=404)
+
+        pet_form = RegisterPetForm(request.POST, instance=pet)
+        image_form = PetImageForm(request.POST, request.FILES, instance=getattr(pet, "image", None))
+
+        if pet_form.is_valid() and image_form.is_valid():
+            with transaction.atomic():
+                pet_form.save()
+                image_form.save()
+
+            return redirect("my_pets")
+
+        return render(
+            request,
+            "pets/edit_pet.html",
+            {"pet_form": pet_form, "image_form": image_form, "pet": pet},
+        )
+
+class DeletePetView(View):
+    """View for deleting an existing pet."""
+
+    def get(self, request, pet_id):
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+
+        try:
+            pet = Pet.objects.get(id=pet_id, user__auth_user=request.user)
+        except Pet.DoesNotExist:
+            return render(request, "404.html", status=404)
+
+        return render(request, "pets/delete_pet.html", {"pet": pet})
+
+    def post(self, request, pet_id):
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+
+        try:
+            pet = Pet.objects.get(id=pet_id, user__auth_user=request.user)
+        except Pet.DoesNotExist:
+            return render(request, "404.html", status=404)
+
+        if getattr(pet, "status", None) == "Pending":
+            return render(request, "pets/delete_pet.html", {
+                "pet": pet,
+                "error": "Cannot delete a pet with Pending status."
+            })
+
+        with transaction.atomic():
+            pet.delete()
+        return redirect("my_pets")
 
 def get_breeds(request):
     """Return distinct breeds for a given species, excluding null/empty values."""

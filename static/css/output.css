@@ -1924,6 +1924,9 @@
   .bg-primary {
     background-color: var(--color-primary);
   }
+  .bg-red-600 {
+    background-color: var(--color-red-600);
+  }
   .bg-warning\/20 {
     background-color: var(--color-warning);
     @supports (color: color-mix(in lab, red, red)) {
