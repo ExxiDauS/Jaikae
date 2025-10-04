@@ -9,6 +9,7 @@
     <div class="text-center mb-8">
       <h1 class="text-5xl font-bold text-primary mb-4">🐾 My Pets</h1>
       <p class="text-base-content/70 text-lg">Manage your pets here.</p>
+      <a href="{% url 'register_pet' %}" class="btn btn-primary mt-4 text-white">Register New Pet</a>
     </div>
     {% if pets|length == 0 %}
       <div class="text-center text-base-content/70">
@@ -24,7 +25,7 @@
           <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
             <figure class="relative">
               {% if item.image_url %}
-                <img src="{{ item.image_url }}" alt="{{ item.pet.name }}" class="h-48 w-full object-cover" />
+                <img src="{{ item.image_url }}" alt="{{ item.pet.name }}" class="h-48 w-full object-contain" />
               {% else %}
                 <div class="flex items-center justify-center h-48 w-full bg-base-200">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,9 +58,27 @@
                     , {{ item.pet.breed }}
                   {% endif %}
                 </div>
-                <div>{{ item.pet.gender }}</div>
-                <div>{{ item.pet.color }}</div>
-                <div>{{ item.pet.weight }} kg</div>
+                <div>
+                  {% if item.pet.gender %}
+                    {{ item.pet.gender }}
+                  {% else %}
+                    Gender not specified
+                  {% endif %}
+                </div>
+                <div>
+                  {% if item.pet.color %}
+                    {{ item.pet.color }}
+                  {% else %}
+                    Color not specified
+                  {% endif %}
+                </div>
+                <div>
+                  {% if item.pet.weight %}
+                    {{ item.pet.weight }} kg
+                  {% else %}
+                    Weight not specified
+                  {% endif %}
+                </div>
               </div>
               <p class="text-sm text-base-content/70 mt-2">
                 {% if item.pet.description %}
@@ -73,11 +92,36 @@
                 <div class="flex gap-2">
                   <a href="{% url 'pet_detail' item.pet.id %}" class="btn btn-primary btn-sm text-white">Learn More</a>
                   <a href="{% url 'edit_pet' item.pet.id %}" class="btn btn-secondary btn-sm">Edit</a>
-                  <a href="{% url 'delete_pet' item.pet.id %}" class="btn btn-error btn-sm">Delete</a>
+                  <button onclick="confirmDelete{{ item.pet.id }}.showModal()" class="btn btn-error btn-sm">Delete</button>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Delete Confirmation Modal -->
+          <dialog id="confirmDelete{{ item.pet.id }}" class="modal">
+            <div class="modal-box">
+              <h3 class="font-bold text-lg">Confirm Deletion</h3>
+              <p class="py-4">
+                Are you sure you want to delete <span class="font-semibold text-primary">{{ item.pet.name }}</span>? This action cannot be undone.
+              </p>
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn btn-ghost btn-outline">Cancel</button>
+                </form>
+                <form method="post" action="{% url 'delete_pet' item.pet.id %}" onsubmit="handleDeleteSubmit(event, {{ item.pet.id }})">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-error" id="deleteBtn{{ item.pet.id }}">
+                    <span class="delete-text">Delete</span>
+                    <span class="loading loading-spinner loading-sm hidden"></span>
+                  </button>
+                </form>
+              </div>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
         {% endfor %}
       </div>
     {% endif %}
@@ -112,4 +156,19 @@
       </div>
     {% endif %}
   </div>
+
+  <script>
+    function handleDeleteSubmit(event, petId) {
+      const deleteBtn = document.getElementById(`deleteBtn${petId}`)
+      const cancelBtn = document.getElementById(`cancelBtn${petId}`)
+      const deleteText = deleteBtn.querySelector('.delete-text')
+      const spinner = deleteBtn.querySelector('.loading')
+    
+      // Disable button and show loading state
+      deleteBtn.disabled = true
+      cancelBtn.disabled = true
+      deleteText.classList.add('hidden')
+      spinner.classList.remove('hidden')
+    }
+  </script>
 {% endblock %}

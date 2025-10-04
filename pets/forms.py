@@ -1,4 +1,5 @@
 # pets/forms.py
+from datetime import date
 from django import forms
 from .models import Pet, PetImage
 
@@ -179,7 +180,7 @@ class RegisterPetForm(forms.ModelForm):
             "weight": "Weight (kg)",
             "gender": "Gender",
             "adoption_fee": "Adoption Fee ($)",
-            "dob": "Date of Birth",
+            "dob": "Date of Birth *",
             "description": "Description",
         }
         help_texts = {
@@ -187,9 +188,13 @@ class RegisterPetForm(forms.ModelForm):
             "description": "Include personality traits, training status, health information, etc.",
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Remove the empty_label lines since they don't work with ChoiceField
+    def clean_dob(self):
+        dob = self.cleaned_data.get('dob')
+        if dob and dob > date.today():
+            raise forms.ValidationError(
+                "Date of birth cannot be in the future."
+            )
+        return dob
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -213,8 +218,3 @@ class PetImageForm(forms.ModelForm):
         labels = {
             "pet_image": "Upload Pet Image",
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Make the image field required
-        self.fields['pet_image'].required = True
