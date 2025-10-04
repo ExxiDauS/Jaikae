@@ -9,6 +9,7 @@
     <div class="text-center mb-8">
       <h1 class="text-5xl font-bold text-primary mb-4">🐾 My Pets</h1>
       <p class="text-base-content/70 text-lg">Manage your pets here.</p>
+      <a href="{% url 'register_pet' %}" class="btn btn-primary mt-4 text-white">Register New Pet</a>
     </div>
     {% if pets|length == 0 %}
       <div class="text-center text-base-content/70">
@@ -73,11 +74,33 @@
                 <div class="flex gap-2">
                   <a href="{% url 'pet_detail' item.pet.id %}" class="btn btn-primary btn-sm text-white">Learn More</a>
                   <a href="{% url 'edit_pet' item.pet.id %}" class="btn btn-secondary btn-sm">Edit</a>
-                  <a href="{% url 'delete_pet' item.pet.id %}" class="btn btn-error btn-sm">Delete</a>
+                  <button onclick="confirmDelete{{ item.pet.id }}.showModal()" class="btn btn-error btn-sm">Delete</button>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Delete Confirmation Modal -->
+          <dialog id="confirmDelete{{ item.pet.id }}" class="modal">
+            <div class="modal-box">
+              <h3 class="font-bold text-lg">Confirm Deletion</h3>
+              <p class="py-4">
+                Are you sure you want to delete <span class="font-semibold text-primary">{{ item.pet.name }}</span>? This action cannot be undone.
+              </p>
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn">Cancel</button>
+                </form>
+                <form method="post" action="{% url 'delete_pet' item.pet.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-error">Delete</button>
+                </form>
+              </div>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
         {% endfor %}
       </div>
     {% endif %}

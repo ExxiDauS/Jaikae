@@ -163,7 +163,7 @@ class RegisterPetView(View):
                 pet_image.pet = pet
                 pet_image.save()
 
-            return redirect("pets")
+            return redirect("my_pets")
 
         # If invalid, re-render with errors
         return render(
@@ -273,17 +273,6 @@ class EditPetView(View):
 class DeletePetView(View):
     """View for deleting an existing pet."""
 
-    def get(self, request, pet_id):
-        if not request.user.is_authenticated:
-            return redirect("account_login")
-
-        try:
-            pet = Pet.objects.get(id=pet_id, user__auth_user=request.user)
-        except Pet.DoesNotExist:
-            return render(request, "404.html", status=404)
-
-        return render(request, "pets/delete_pet.html", {"pet": pet})
-
     def post(self, request, pet_id):
         if not request.user.is_authenticated:
             return redirect("account_login")
@@ -294,10 +283,7 @@ class DeletePetView(View):
             return render(request, "404.html", status=404)
 
         if getattr(pet, "status", None) == "Pending":
-            return render(request, "pets/delete_pet.html", {
-                "pet": pet,
-                "error": "Cannot delete a pet with Pending status."
-            })
+            return redirect("my_pets")
 
         with transaction.atomic():
             pet.delete()

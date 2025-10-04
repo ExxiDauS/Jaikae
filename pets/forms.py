@@ -179,7 +179,7 @@ class RegisterPetForm(forms.ModelForm):
             "weight": "Weight (kg)",
             "gender": "Gender",
             "adoption_fee": "Adoption Fee ($)",
-            "dob": "Date of Birth",
+            "dob": "Date of Birth *",
             "description": "Description",
         }
         help_texts = {
