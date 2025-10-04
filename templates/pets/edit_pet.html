@@ -133,7 +133,7 @@
                     <label class="label"><span class="label-text font-medium">Current Image</span></label>
                     <div class="card bg-base-200 shadow-sm">
                       <figure class="px-4 pt-4">
-                        <img src="{{ image_url }}" alt="{{ pet.name }}" class="rounded-xl max-h-64 w-full object-cover" onerror="this.src='{% static 'images/placeholder-pet.png' %}'" />
+                        <img src="{{ image_url }}" alt="{{ pet.name }}" class="rounded-xl max-h-64 w-full object-contain" onerror="this.src='{% static 'images/placeholder-pet.png' %}'" />
                       </figure>
                       <div class="card-body items-center text-center pt-2">
                         <p class="text-sm text-base-content/70">Upload a new image to replace this one</p>
@@ -163,7 +163,7 @@
                   <label class="label"><span class="label-text font-medium">New Image Preview</span></label>
                   <div class="card bg-base-200 shadow-sm">
                     <figure class="px-4 pt-4">
-                      <img id="imagePreview" src="" alt="New image preview" class="rounded-xl max-h-64 w-full object-cover" />
+                      <img id="imagePreview" src="" alt="New image preview" class="rounded-xl max-h-64 w-full object-contain" />
                     </figure>
                   </div>
                 </div>

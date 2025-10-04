@@ -132,7 +132,7 @@
             <div class="card card-compact bg-base-100 shadow-md hover:shadow-lg transition-shadow">
               <figure class="relative">
                 {% if item.image_url %}
-                  <img src="{{ item.image_url }}" alt="{{ item.pet.name }}" class="h-48 w-full object-cover" />
+                  <img src="{{ item.image_url }}" alt="{{ item.pet.name }}" class="h-48 w-full object-contain" />
                 {% else %}
                   <div class="flex items-center justify-center h-48 w-full bg-base-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">

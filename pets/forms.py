@@ -187,10 +187,6 @@ class RegisterPetForm(forms.ModelForm):
             "description": "Include personality traits, training status, health information, etc.",
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Remove the empty_label lines since they don't work with ChoiceField
-
     def save(self, commit=True):
         instance = super().save(commit=False)
         if not instance.status:
