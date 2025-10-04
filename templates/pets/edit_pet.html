@@ -34,7 +34,7 @@
                   <label class="label"><span class="label-text font-medium">{{ pet_form.name.label }}</span></label>
                   {{ pet_form.name }}
                   {% if pet_form.name.errors %}
-                    <label class="label"><span class="label-text-alt text-error">{{ pet_form.name.errors.0 }}</span></label>
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.name.errors.0 }}</span></label>
                   {% endif %}
                 </div>
 
@@ -43,7 +43,7 @@
                   <label class="label"><span class="label-text font-medium">{{ pet_form.species.label }}</span></label>
                   {{ pet_form.species }}
                   {% if pet_form.species.errors %}
-                    <label class="label"><span class="label-text-alt text-error">{{ pet_form.species.errors.0 }}</span></label>
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.species.errors.0 }}</span></label>
                   {% endif %}
                 </div>
 
@@ -52,7 +52,7 @@
                   <label class="label"><span class="label-text font-medium">{{ pet_form.breed.label }}</span></label>
                   {{ pet_form.breed }}
                   {% if pet_form.breed.errors %}
-                    <label class="label"><span class="label-text-alt text-error">{{ pet_form.breed.errors.0 }}</span></label>
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.breed.errors.0 }}</span></label>
                   {% endif %}
                 </div>
 
@@ -61,7 +61,7 @@
                   <label class="label"><span class="label-text font-medium">{{ pet_form.color.label }}</span></label>
                   {{ pet_form.color }}
                   {% if pet_form.color.errors %}
-                    <label class="label"><span class="label-text-alt text-error">{{ pet_form.color.errors.0 }}</span></label>
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.color.errors.0 }}</span></label>
                   {% endif %}
                 </div>
 
@@ -72,7 +72,7 @@
                     <label class="label"><span class="label-text font-medium">{{ pet_form.weight.label }}</span></label>
                     {{ pet_form.weight }}
                     {% if pet_form.weight.errors %}
-                      <label class="label"><span class="label-text-alt text-error">{{ pet_form.weight.errors.0 }}</span></label>
+                      <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.weight.errors.0 }}</span></label>
                     {% endif %}
                   </div>
 
@@ -81,7 +81,7 @@
                     <label class="label"><span class="label-text font-medium">{{ pet_form.gender.label }}</span></label>
                     {{ pet_form.gender }}
                     {% if pet_form.gender.errors %}
-                      <label class="label"><span class="label-text-alt text-error">{{ pet_form.gender.errors.0 }}</span></label>
+                      <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.gender.errors.0 }}</span></label>
                     {% endif %}
                   </div>
                 </div>
@@ -93,7 +93,7 @@
                     <label class="label"><span class="label-text font-medium">{{ pet_form.dob.label }}</span></label>
                     {{ pet_form.dob }}
                     {% if pet_form.dob.errors %}
-                      <label class="label"><span class="label-text-alt text-error">{{ pet_form.dob.errors.0 }}</span></label>
+                      <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.dob.errors.0 }}</span></label>
                     {% endif %}
                   </div>
 
@@ -102,7 +102,7 @@
                     <label class="label"><span class="label-text font-medium">{{ pet_form.adoption_fee.label }}</span></label>
                     {{ pet_form.adoption_fee }}
                     {% if pet_form.adoption_fee.errors %}
-                      <label class="label"><span class="label-text-alt text-error">{{ pet_form.adoption_fee.errors.0 }}</span></label>
+                      <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.adoption_fee.errors.0 }}</span></label>
                     {% endif %}
                     {% if pet_form.adoption_fee.help_text %}
                       <label class="label"><span class="label-text-alt">{{ pet_form.adoption_fee.help_text }}</span></label>
@@ -115,7 +115,7 @@
                   <label class="label"><span class="label-text font-medium">{{ pet_form.description.label }}</span></label>
                   {{ pet_form.description }}
                   {% if pet_form.description.errors %}
-                    <label class="label"><span class="label-text-alt text-error">{{ pet_form.description.errors.0 }}</span></label>
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.description.errors.0 }}</span></label>
                   {% endif %}
                   {% if pet_form.description.help_text %}
                     <label class="label"><span class="label-text-alt">{{ pet_form.description.help_text }}</span></label>
@@ -154,7 +154,7 @@
                   <label class="label"><span class="label-text font-medium">{{ image_form.pet_image.label }}</span></label>
                   <div>{{ image_form.pet_image }}</div>
                   {% if image_form.pet_image.errors %}
-                    <label class="label"><span class="label-text-alt text-error">{{ image_form.pet_image.errors.0 }}</span></label>
+                    <label class="label"><span class="label-text-alt text-red-600">{{ image_form.pet_image.errors.0 }}</span></label>
                   {% endif %}
                 </div>
 

@@ -263,10 +263,20 @@ class EditPetView(View):
 
             return redirect("my_pets")
 
+        # Generate image_url for error case too
+        image_url = None
+        if getattr(pet, "image", None):
+            image_url = generate_presigned_url(str(pet.image.pet_image))
+
         return render(
             request,
             "pets/edit_pet.html",
-            {"pet_form": pet_form, "image_form": image_form, "pet": pet},
+            {
+                "pet_form": pet_form,
+                "image_form": image_form,
+                "pet": pet,
+                "image_url": image_url
+            },
         )
 
 
