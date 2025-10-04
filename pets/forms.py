@@ -111,7 +111,7 @@ class PetFilterForm(forms.Form):
 
 class RegisterPetForm(forms.ModelForm):
     GENDER_CHOICES = [
-        ('Select gender', 'Select gender'),
+        ('', 'Select gender'),  # Empty string as value
         ('Male', 'Male'),
         ('Female', 'Female'),
     ]
@@ -189,12 +189,7 @@ class RegisterPetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        # Add empty option to select fields
-        if 'species' in self.fields:
-            self.fields['species'].empty_label = "Select species"
-        if 'gender' in self.fields:
-            self.fields['gender'].empty_label = "Select gender"
+        # Remove the empty_label lines since they don't work with ChoiceField
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -213,11 +208,10 @@ class PetImageForm(forms.ModelForm):
             "pet_image": forms.FileInput(attrs={
                 "accept": "image/*",
                 "class": "file-input file-input-bordered file-input-primary w-full mt-2",
-                "required": True,
             }),
         }
         labels = {
-            "pet_image": "Upload Pet Image *",
+            "pet_image": "Upload Pet Image",
         }
 
     def __init__(self, *args, **kwargs):
