@@ -42,6 +42,11 @@
                class="btn btn-error btn-sm">Reject</a>
           </div>
           {% endif %}
+          {% if app.status == 'Approved' %}
+            <div>
+              <a href="{% url 'adoption_application_detail' app.id %}" class="btn btn-primary btn-sm">View Details</a>
+            </div>
+          {% endif %}
         </div>
       </div>
       {% endfor %}

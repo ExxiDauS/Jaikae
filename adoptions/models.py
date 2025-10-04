@@ -31,7 +31,6 @@ class AdoptionApplication(models.Model):
     notes = models.TextField(
         blank=True,
         null=True,
-        verbose_name="Why do you want to adopt this pet?",
     )
     requested_date = models.DateField(blank=True, null=True)
 

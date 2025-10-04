@@ -1,6 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.utils import timezone
+from xhtml2pdf import pisa
+import io
+
 from .models import AdoptionApplication
 from .forms import AdoptionApplicationForm
 from pets.models import Pet
@@ -18,7 +24,7 @@ def apply_for_adoption(request, pet_id=None):
 
         if form.is_valid():
             application = form.save(commit=False)
-            custom_user = User.objects.get(id=request.user.id)
+            custom_user = User.objects.get(auth_user=request.user.id)
             application.user = custom_user
 
             # Check duplicate
@@ -48,7 +54,7 @@ def apply_for_adoption(request, pet_id=None):
 
 @login_required
 def my_applications(request):
-    custom_user = User.objects.get(id=request.user.id)
+    custom_user = User.objects.get(auth_user=request.user.id)
     applications = (
         AdoptionApplication.objects.filter(user=custom_user)
         .select_related("pet")
@@ -66,7 +72,7 @@ def my_applications(request):
 
 @login_required
 def manage_applications(request):
-    custom_user = User.objects.get(id=request.user.id)
+    custom_user = User.objects.get(auth_user=request.user.id)
     my_pet = Pet.objects.filter(user=custom_user)
     my_applications = AdoptionApplication.objects.filter(pet__in=my_pet)
     print(request.user.id, custom_user.first_name)
@@ -82,7 +88,7 @@ def manage_applications(request):
 
 @login_required
 def approve_application(request, pk):
-    application = get_object_or_404(AdoptionApplication, id=pk, pet__owner=request.user)
+    application = AdoptionApplication.objects.get(id=pk)
 
     if request.method == "POST":
         from django.utils import timezone
@@ -134,10 +140,37 @@ def reject_application(request, pk):
 
 @login_required
 def adoption_application_detail(request, pk):
-    custom_user = User.objects.get(id=request.user.id)
+    custom_user = User.objects.get(auth_user=request.user.id)
     application = get_object_or_404(AdoptionApplication, id=pk, user=custom_user)
 
     context = {
         "application": application,
     }
     return render(request, "adoptions/application_detail.html", context)
+
+
+@login_required
+def download_application_pdf(request, pk):
+    custom_user = User.objects.get(auth_user=request.user.id)
+    application = get_object_or_404(AdoptionApplication, id=pk, user=custom_user)
+
+    # Render HTML template with context
+    html_string = render_to_string(
+        "adoptions/application_pdf.html",
+        {
+            "application": application,
+            "now": timezone.now(),
+        },
+    )
+
+    # Create PDF
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html_string.encode("UTF-8")), result)
+
+    if not pdf.err:
+        response = HttpResponse(result.getvalue(), content_type="application/pdf")
+        filename = f"application_{application.pet.name}_{application.id}.pdf"
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response
+
+    return HttpResponse("Error generating PDF", status=400)

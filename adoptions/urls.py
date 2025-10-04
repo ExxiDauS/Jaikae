@@ -12,4 +12,9 @@ urlpatterns = [
         views.adoption_application_detail,
         name="adoption_application_detail",
     ),
+    path(
+        "application/<int:pk>/download-pdf/",
+        views.download_application_pdf,
+        name="download_application_pdf",
+    ),
 ]

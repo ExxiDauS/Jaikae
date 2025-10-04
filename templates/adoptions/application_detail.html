@@ -228,25 +228,39 @@
 
       <!-- Actions -->
       <div class="card-actions justify-between mt-8">
-        <a href="{% url 'my_applications' %}" 
-           class="btn btn-ghost">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        <a href="{% url 'my_applications' %}" class="btn btn-ghost">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" 
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" 
+                  stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
           Back to Applications
         </a>
         
-        {% if application.status == 'Approved' %}
-        <a href="{% url 'pet_detail' application.pet.id %}" 
-           class="btn btn-primary">
-          View Pet Details
-        </a>
-        {% elif application.status == 'Rejected' %}
-        <a href="{% url 'pet_list' %}" 
-           class="btn btn-primary">
-          Browse Other Pets
-        </a>
-        {% endif %}
+        <div class="flex gap-2">
+          <!-- PDF Download Button -->
+          <a href="{% url 'download_application_pdf' application.id %}" 
+            class="btn btn-outline btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" 
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" 
+                    stroke-width="2" 
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Download PDF
+          </a>
+          
+          {% if application.status == 'Approved' %}
+          <a href="{% url 'pet_detail' application.pet.id %}" 
+            class="btn btn-primary">
+            View Pet Details
+          </a>
+          {% elif application.status == 'Rejected' %}
+          <a href="{% url 'pet_list' %}" class="btn btn-primary">
+            Browse Other Pets
+          </a>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
