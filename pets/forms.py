@@ -1,4 +1,5 @@
 # pets/forms.py
+from datetime import date
 from django import forms
 from .models import Pet, PetImage
 
@@ -111,7 +112,7 @@ class PetFilterForm(forms.Form):
 
 class RegisterPetForm(forms.ModelForm):
     GENDER_CHOICES = [
-        ('Select gender', 'Select gender'),
+        ('', 'Select gender'),  # Empty string as value
         ('Male', 'Male'),
         ('Female', 'Female'),
     ]
@@ -179,7 +180,7 @@ class RegisterPetForm(forms.ModelForm):
             "weight": "Weight (kg)",
             "gender": "Gender",
             "adoption_fee": "Adoption Fee ($)",
-            "dob": "Date of Birth",
+            "dob": "Date of Birth *",
             "description": "Description",
         }
         help_texts = {
@@ -187,14 +188,13 @@ class RegisterPetForm(forms.ModelForm):
             "description": "Include personality traits, training status, health information, etc.",
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # Add empty option to select fields
-        if 'species' in self.fields:
-            self.fields['species'].empty_label = "Select species"
-        if 'gender' in self.fields:
-            self.fields['gender'].empty_label = "Select gender"
+    def clean_dob(self):
+        dob = self.cleaned_data.get('dob')
+        if dob and dob > date.today():
+            raise forms.ValidationError(
+                "Date of birth cannot be in the future."
+            )
+        return dob
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -213,14 +213,8 @@ class PetImageForm(forms.ModelForm):
             "pet_image": forms.FileInput(attrs={
                 "accept": "image/*",
                 "class": "file-input file-input-bordered file-input-primary w-full mt-2",
-                "required": True,
             }),
         }
         labels = {
-            "pet_image": "Upload Pet Image *",
+            "pet_image": "Upload Pet Image",
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Make the image field required
-        self.fields['pet_image'].required = True

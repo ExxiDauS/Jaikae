@@ -30,6 +30,15 @@
               {% if image_form.pet_image.errors %}
                 <label class="label"><span class="label-text-alt text-red-600">{{ image_form.pet_image.errors.0 }}</span></label>
               {% endif %}
+
+              <!-- Image Preview -->
+              <div id="imagePreviewContainer" class="mt-4 hidden">
+                <div class="card bg-base-100 shadow-md">
+                  <figure>
+                    <img id="imagePreview" src="" alt="Pet preview" class="h-72 w-full object-contain rounded-lg" />
+                  </figure>
+                </div>
+              </div>
             </div>
 
             <!-- Pet Details Section -->
@@ -140,10 +149,9 @@
             <div class="flex flex-col sm:flex-row gap-4 justify-end pt-6">
               <a href="{% url 'pets' %}" class="btn btn-outline btn-lg w-full sm:w-auto">Cancel</a>
               <button type="submit" class="btn btn-primary btn-lg text-white w-full sm:w-auto flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-              Register Pet
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>Register Pet
               </button>
             </div>
           </form>
@@ -151,4 +159,29 @@
       </div>
     </div>
   </div>
+
+  <!-- Image Preview Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const imageInput = document.querySelector('input[type="file"]')
+      const previewContainer = document.getElementById('imagePreviewContainer')
+      const previewImage = document.getElementById('imagePreview')
+    
+      if (imageInput) {
+        imageInput.addEventListener('change', function (e) {
+          const file = e.target.files[0]
+          if (file) {
+            const reader = new FileReader()
+            reader.onload = function (event) {
+              previewImage.src = event.target.result
+              previewContainer.classList.remove('hidden')
+            }
+            reader.readAsDataURL(file)
+          } else {
+            previewContainer.classList.add('hidden')
+          }
+        })
+      }
+    })
+  </script>
 {% endblock %}
