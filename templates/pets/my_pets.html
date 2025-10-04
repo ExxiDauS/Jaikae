@@ -58,9 +58,27 @@
                     , {{ item.pet.breed }}
                   {% endif %}
                 </div>
-                <div>{{ item.pet.gender }}</div>
-                <div>{{ item.pet.color }}</div>
-                <div>{{ item.pet.weight }} kg</div>
+                <div>
+                  {% if item.pet.gender %}
+                    {{ item.pet.gender }}
+                  {% else %}
+                    Gender not specified
+                  {% endif %}
+                </div>
+                <div>
+                  {% if item.pet.color %}
+                    {{ item.pet.color }}
+                  {% else %}
+                    Color not specified
+                  {% endif %}
+                </div>
+                <div>
+                  {% if item.pet.weight %}
+                    {{ item.pet.weight }} kg
+                  {% else %}
+                    Weight not specified
+                  {% endif %}
+                </div>
               </div>
               <p class="text-sm text-base-content/70 mt-2">
                 {% if item.pet.description %}
@@ -89,11 +107,14 @@
               </p>
               <div class="modal-action">
                 <form method="dialog">
-                  <button class="btn">Cancel</button>
+                  <button class="btn btn-ghost btn-outline">Cancel</button>
                 </form>
-                <form method="post" action="{% url 'delete_pet' item.pet.id %}">
+                <form method="post" action="{% url 'delete_pet' item.pet.id %}" onsubmit="handleDeleteSubmit(event, {{ item.pet.id }})">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-error">Delete</button>
+                  <button type="submit" class="btn btn-error" id="deleteBtn{{ item.pet.id }}">
+                    <span class="delete-text">Delete</span>
+                    <span class="loading loading-spinner loading-sm hidden"></span>
+                  </button>
                 </form>
               </div>
             </div>
@@ -135,4 +156,19 @@
       </div>
     {% endif %}
   </div>
+
+  <script>
+    function handleDeleteSubmit(event, petId) {
+      const deleteBtn = document.getElementById(`deleteBtn${petId}`)
+      const cancelBtn = document.getElementById(`cancelBtn${petId}`)
+      const deleteText = deleteBtn.querySelector('.delete-text')
+      const spinner = deleteBtn.querySelector('.loading')
+    
+      // Disable button and show loading state
+      deleteBtn.disabled = true
+      cancelBtn.disabled = true
+      deleteText.classList.add('hidden')
+      spinner.classList.remove('hidden')
+    }
+  </script>
 {% endblock %}
