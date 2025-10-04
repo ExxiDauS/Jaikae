@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Adoption Application - {{ application.pet.name }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      color: #1f2937;
+      line-height: 1.6;
+      font-size: 12px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #3b82f6;
+    }
+    
+    .header h1 {
+      color: #1f2937;
+      margin: 0 0 10px 0;
+      font-size: 24px;
+    }
+    
+    .status-badge {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .status-pending {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    
+    .status-approved {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-rejected {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .section {
+      margin-bottom: 25px;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #374151;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    
+    td {
+      padding: 8px 12px;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .info-label {
+      font-weight: bold;
+      background-color: #f3f4f6;
+      width: 35%;
+    }
+    
+    .text-content {
+      background-color: #f9fafb;
+      padding: 15px;
+      border: 1px solid #e5e7eb;
+      white-space: pre-wrap;
+    }
+    
+    .badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    
+    .badge-yes {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    
+    .badge-no {
+      background-color: #f3f4f6;
+      color: #6b7280;
+    }
+    
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      font-size: 11px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Adoption Application</h1>
+    <div class="status-badge status-{{ application.status|lower }}">
+      {{ application.get_status_display }}
+    </div>
+  </div>
+
+  <!-- Pet Information -->
+  <div class="section">
+    <h2 class="section-title">Pet Information</h2>
+    <table>
+      <tr>
+        <td class="info-label">Pet Name</td>
+        <td>{{ application.pet.name }}</td>
+      </tr>
+      <tr>
+        <td class="info-label">Species</td>
+        <td>{{ application.pet.species }}</td>
+      </tr>
+      <tr>
+        <td class="info-label">Breed</td>
+        <td>{{ application.pet.breed }}</td>
+      </tr>
+      {% if application.pet.age %}
+      <tr>
+        <td class="info-label">Age</td>
+        <td>{{ application.pet.age }} years old</td>
+      </tr>
+      {% endif %}
+    </table>
+  </div>
+
+  <!-- Application Timeline -->
+  <div class="section">
+    <h2 class="section-title">Application Timeline</h2>
+    <table>
+      <tr>
+        <td class="info-label">Application Date</td>
+        <td>
+          {{ application.application_date|date:"F d, Y" }} at 
+          {{ application.application_date|date:"h:i A" }}
+        </td>
+      </tr>
+      {% if application.requested_date %}
+      <tr>
+        <td class="info-label">Requested Adoption Date</td>
+        <td>{{ application.requested_date|date:"F d, Y" }}</td>
+      </tr>
+      {% endif %}
+      {% if application.approved_date %}
+      <tr>
+        <td class="info-label">Approved Date</td>
+        <td>{{ application.approved_date|date:"F d, Y" }}</td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td class="info-label">Last Updated</td>
+        <td>
+          {{ application.updated_at|date:"F d, Y" }} at 
+          {{ application.updated_at|date:"h:i A" }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Living Situation -->
+  <div class="section">
+    <h2 class="section-title">Living Situation</h2>
+    <table>
+      <tr>
+        <td class="info-label">Housing Type</td>
+        <td>{{ application.get_housing_type_display }}</td>
+      </tr>
+      <tr>
+        <td class="info-label">Home Ownership</td>
+        <td>{{ application.get_home_ownership_display }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Pet Experience -->
+  <div class="section">
+    <h2 class="section-title">Pet Experience</h2>
+    <table>
+      <tr>
+        <td class="info-label">Has Other Pets</td>
+        <td>
+          {% if application.has_other_pets %}
+            <span class="badge badge-yes">Yes</span>
+          {% else %}
+            <span class="badge badge-no">No</span>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+    
+    {% if application.has_other_pets and application.other_pets_details %}
+    <div style="margin-top: 15px;">
+      <strong>Other Pets Details:</strong>
+      <div class="text-content">{{ application.other_pets_details }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Work Schedule -->
+  {% if application.work_schedule %}
+  <div class="section">
+    <h2 class="section-title">Lifestyle & Schedule</h2>
+    <div class="text-content">{{ application.work_schedule }}</div>
+  </div>
+  {% endif %}
+
+  <!-- Application Notes -->
+  {% if application.notes %}
+  <div class="section">
+    <h2 class="section-title">
+      Why I Want to Adopt {{ application.pet.name }}
+    </h2>
+    <div class="text-content">{{ application.notes }}</div>
+  </div>
+  {% endif %}
+
+  <div class="footer">
+    <p>Generated on {{ now|date:"F d, Y" }} at {{ now|date:"h:i A" }}</p>
+    <p>Application ID: #{{ application.id }}</p>
+  </div>
+</body>
+</html>

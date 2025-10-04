@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-primary mb-2">My Applications</h1>
+      <p class="text-lg text-base-content/70">Keep track of your adoption applications and their status.</p>
+    </div>
+
+  {% if applications %}
+    <div class="grid gap-6">
+      {% for app in applications %}
+      <a href="{% url 'adoption_application_detail' app.id %}" class="block hover:shadow-lg transition-all">
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <div class="flex justify-between items-start">
+              <div>
+                <h2 class="card-title text-2xl">{{ app.pet.name }}</h2>
+                <p class="text-base-content/70">{{ app.pet.species }} - {{ app.pet.breed }}</p>
+              </div>
+              <div class="badge badge-lg
+                {% if app.status == 'Pending' %}badge-warning
+                {% elif app.status == 'Approved' %}badge-success
+                {% else %}badge-error{% endif %}">
+                {{ app.get_status_display }}
+              </div>
+            </div>
+
+            <div class="text-sm text-base-content/70 mt-2">
+              Applied: {{ app.application_date|date:"M d, Y" }}
+            </div>
+
+            {% if app.notes %}
+            <p class="mt-4 text-sm">{{ app.notes|truncatewords:30 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert">
+      <span>You haven't submitted any applications yet.</span>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
