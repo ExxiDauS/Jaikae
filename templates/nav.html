@@ -34,7 +34,7 @@
               <a class="text-lg" href="{% url 'pets' %}">Pets</a>
             </li>
             <li class="border-b border-black">
-              <a class="text-lg" href="/adoptions/">Adoptions</a>
+              <a class="text-lg" href="{% url 'my_applications' %}">Adoptions</a>
             </li>
             <li class="border-b border-black">
               <a class="text-lg" href="/vaccines/">Vaccines</a>
@@ -89,7 +89,10 @@
             <a href="{% url 'pets' %}">Pets</a>
           </li>
           <li>
-            <a href="/adoptions/">Adoptions</a>
+            <a href="{% url 'my_applications' %}">Adoptions</a>
+          </li>
+          <li>
+            <a href="{% url 'manage_applications' %}">Request</a>
           </li>
           <li>
             <a href="/vaccines/">Vaccines</a>

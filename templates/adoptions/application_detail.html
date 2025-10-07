@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Details{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <div class="flex justify-between items-start mb-6">
+        <h1 class="card-title text-3xl">Application Details</h1>
+        <div class="badge badge-lg
+          {% if application.status == 'Pending' %}badge-warning
+          {% elif application.status == 'Approved' %}badge-success
+          {% else %}badge-error{% endif %}">
+          {{ application.get_status_display }}
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Pet Information -->
+        <div>
+          <h3 class="text-xl font-semibold mb-3">Pet Information</h3>
+          <div class="bg-base-200 rounded-lg p-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-2xl font-bold">{{ application.pet.name }}</p>
+                <p class="text-base-content/70 mt-1">
+                  {{ application.pet.species }} - {{ application.pet.breed }}
+                </p>
+                {% if application.pet.age %}
+                <p class="text-sm text-base-content/60 mt-1">
+                  Age: {{ application.pet.age }} years old
+                </p>
+                {% endif %}
+              </div>
+              <a href="{% url 'pet_detail' application.pet.id %}" 
+                 class="btn btn-sm btn-ghost">
+                View Pet
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Application Dates -->
+        <div>
+          <h3 class="text-xl font-semibold mb-3">Application Timeline</h3>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-base-200 rounded-lg p-4">
+              <p class="text-sm font-semibold text-base-content/70 mb-1">
+                Application Date
+              </p>
+              <p class="text-lg font-medium">
+                {{ application.application_date|date:"F d, Y" }}
+              </p>
+              <p class="text-sm text-base-content/60">
+                {{ application.application_date|date:"h:i A" }}
+              </p>
+            </div>
+
+            {% if application.requested_date %}
+            <div class="bg-base-200 rounded-lg p-4">
+              <p class="text-sm font-semibold text-base-content/70 mb-1">
+                Requested Adoption Date
+              </p>
+              <p class="text-lg font-medium">
+                {{ application.requested_date|date:"F d, Y" }}
+              </p>
+            </div>
+            {% endif %}
+
+            {% if application.approved_date %}
+            <div class="bg-base-200 rounded-lg p-4">
+              <p class="text-sm font-semibold text-base-content/70 mb-1">
+                Approved Date
+              </p>
+              <p class="text-lg font-medium">
+                {{ application.approved_date|date:"F d, Y" }}
+              </p>
+            </div>
+            {% endif %}
+
+            <div class="bg-base-200 rounded-lg p-4">
+              <p class="text-sm font-semibold text-base-content/70 mb-1">
+                Last Updated
+              </p>
+              <p class="text-lg font-medium">
+                {{ application.updated_at|date:"F d, Y" }}
+              </p>
+              <p class="text-sm text-base-content/60">
+                {{ application.updated_at|date:"h:i A" }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Living Situation -->
+        <div>
+          <h3 class="text-xl font-semibold mb-3">Living Situation</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-base-200 rounded-lg p-4">
+              <p class="text-sm font-semibold text-base-content/70 mb-1">
+                Housing Type
+              </p>
+              <p class="text-lg font-medium">
+                {{ application.get_housing_type_display }}
+              </p>
+            </div>
+
+            <div class="bg-base-200 rounded-lg p-4">
+              <p class="text-sm font-semibold text-base-content/70 mb-1">
+                Home Ownership
+              </p>
+              <p class="text-lg font-medium">
+                {{ application.get_home_ownership_display }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Pet Experience -->
+        <div>
+          <h3 class="text-xl font-semibold mb-3">Pet Experience</h3>
+          <div class="bg-base-200 rounded-lg p-4 mb-4">
+            <p class="text-sm font-semibold text-base-content/70 mb-1">
+              Has Other Pets
+            </p>
+            <p class="text-lg font-medium">
+              {% if application.has_other_pets %}
+                <span class="badge badge-success">Yes</span>
+              {% else %}
+                <span class="badge badge-ghost">No</span>
+              {% endif %}
+            </p>
+          </div>
+
+          {% if application.has_other_pets and application.other_pets_details %}
+          <div class="bg-base-200 rounded-lg p-4">
+            <p class="text-sm font-semibold text-base-content/70 mb-2">
+              Other Pets Details
+            </p>
+            <p class="whitespace-pre-wrap leading-relaxed">
+              {{ application.other_pets_details }}
+            </p>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Lifestyle & Schedule -->
+        {% if application.work_schedule %}
+        <div>
+          <h3 class="text-xl font-semibold mb-3">Lifestyle & Schedule</h3>
+          <div class="bg-base-200 rounded-lg p-4">
+            <p class="text-sm font-semibold text-base-content/70 mb-2">
+              Work Schedule / Time at Home
+            </p>
+            <p class="leading-relaxed">
+              {{ application.work_schedule }}
+            </p>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        {% endif %}
+
+        <!-- Application Message -->
+        {% if application.notes %}
+        <div>
+          <h3 class="text-xl font-semibold mb-3">
+            Why I Want to Adopt {{ application.pet.name }}
+          </h3>
+          <div class="bg-base-200 rounded-lg p-6">
+            <p class="whitespace-pre-wrap leading-relaxed">
+              {{ application.notes }}
+            </p>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Status Message -->
+        {% if application.status == 'Approved' %}
+        <div class="alert alert-success">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h3 class="font-bold">Congratulations!</h3>
+            <div class="text-sm">
+              Your application has been approved. 
+              The pet owner will contact you soon.
+            </div>
+          </div>
+        </div>
+        {% elif application.status == 'Rejected' %}
+        <div class="alert alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h3 class="font-bold">Application Not Approved</h3>
+            <div class="text-sm">
+              Unfortunately, your application was not approved. 
+              You can apply for other pets.
+            </div>
+          </div>
+        </div>
+        {% elif application.status == 'Pending' %}
+        <div class="alert alert-warning">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div>
+            <h3 class="font-bold">Pending Review</h3>
+            <div class="text-sm">
+              Your application is being reviewed by the pet owner.
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Actions -->
+      <div class="card-actions justify-between mt-8">
+        <a href="{% url 'my_applications' %}" class="btn btn-ghost">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" 
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" 
+                  stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Applications
+        </a>
+        
+        <div class="flex gap-2">
+          <!-- PDF Download Button -->
+          <a href="{% url 'download_application_pdf' application.id %}" 
+            class="btn btn-outline btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" 
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" 
+                    stroke-width="2" 
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Download PDF
+          </a>
+          
+          {% if application.status == 'Approved' %}
+          <a href="{% url 'pet_detail' application.pet.id %}" 
+            class="btn btn-primary">
+            View Pet Details
+          </a>
+          {% elif application.status == 'Rejected' %}
+          <a href="{% url 'pet_list' %}" class="btn btn-primary">
+            Browse Other Pets
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
