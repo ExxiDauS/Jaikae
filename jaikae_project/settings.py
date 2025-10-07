@@ -217,3 +217,8 @@ ACCOUNT_REMEMBER_COOKIE_NAME = "jaikae_remember"
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 CSRF_TRUSTED_ORIGINS = ["https://exxidaus.ucnil.dev"]
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "optional"
