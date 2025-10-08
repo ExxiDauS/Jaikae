@@ -6,185 +6,203 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container mx-auto px-4 py-8">
-      <!-- Header -->
-      <div class="mb-6">
-        <a href="{% url 'my_pets' %}" class="btn btn-ghost btn-sm gap-2 text-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>Back to My Pets Page
-        </a>
-        <h1 class="text-3xl font-bold mt-4">Edit Pet - {{ pet.name }}</h1>
-        <p class="text-base-content/70 mt-2">Update your pet's information</p>
-      </div>
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-6">
+      <a href="{% url 'my_pets' %}" class="btn btn-ghost btn-sm gap-2 text-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>Back to My Pets Page
+      </a>
+      <h1 class="text-3xl font-bold mt-4">Edit Pet - {{ pet.name }}</h1>
+      <p class="text-base-content/70 mt-2">Update your pet's information</p>
+    </div>
 
-      <!-- Form Card -->
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+    <!-- Form Card -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
 
-            <div class="grid grid-cols-2 gap-6">
-              <!-- Left Column - Pet Details -->
-              <div class="space-y-4">
-                <h2 class="text-xl font-semibold mb-4">Pet Information</h2>
+          <div class="grid grid-cols-2 gap-6">
+            <!-- Left Column - Pet Details -->
+            <div class="space-y-4">
+              <h2 class="text-xl font-semibold mb-4">Pet Information</h2>
 
-                <!-- Name -->
+              <!-- Name -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">{{ pet_form.name.label }}</span></label>
+                {{ pet_form.name }}
+                {% if pet_form.name.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.name.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Species -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">{{ pet_form.species.label }}</span></label>
+                {{ pet_form.species }}
+                {% if pet_form.species.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.species.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Breed -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">{{ pet_form.breed.label }}</span></label>
+                {{ pet_form.breed }}
+                {% if pet_form.breed.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.breed.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Color -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">{{ pet_form.color.label }}</span></label>
+                {{ pet_form.color }}
+                {% if pet_form.color.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.color.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Weight and Gender Row -->
+              <div class="grid grid-cols-2 gap-4">
+                <!-- Weight -->
                 <div class="form-control">
-                  <label class="label"><span class="label-text font-medium">{{ pet_form.name.label }}</span></label>
-                  {{ pet_form.name }}
-                  {% if pet_form.name.errors %}
-                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.name.errors.0 }}</span></label>
+                  <label class="label"><span class="label-text font-medium">{{ pet_form.weight.label }}</span></label>
+                  {{ pet_form.weight }}
+                  {% if pet_form.weight.errors %}
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.weight.errors.0 }}</span></label>
                   {% endif %}
                 </div>
 
-                <!-- Species -->
+                <!-- Gender -->
                 <div class="form-control">
-                  <label class="label"><span class="label-text font-medium">{{ pet_form.species.label }}</span></label>
-                  {{ pet_form.species }}
-                  {% if pet_form.species.errors %}
-                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.species.errors.0 }}</span></label>
-                  {% endif %}
-                </div>
-
-                <!-- Breed -->
-                <div class="form-control">
-                  <label class="label"><span class="label-text font-medium">{{ pet_form.breed.label }}</span></label>
-                  {{ pet_form.breed }}
-                  {% if pet_form.breed.errors %}
-                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.breed.errors.0 }}</span></label>
-                  {% endif %}
-                </div>
-
-                <!-- Color -->
-                <div class="form-control">
-                  <label class="label"><span class="label-text font-medium">{{ pet_form.color.label }}</span></label>
-                  {{ pet_form.color }}
-                  {% if pet_form.color.errors %}
-                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.color.errors.0 }}</span></label>
-                  {% endif %}
-                </div>
-
-                <!-- Weight and Gender Row -->
-                <div class="grid grid-cols-2 gap-4">
-                  <!-- Weight -->
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">{{ pet_form.weight.label }}</span></label>
-                    {{ pet_form.weight }}
-                    {% if pet_form.weight.errors %}
-                      <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.weight.errors.0 }}</span></label>
-                    {% endif %}
-                  </div>
-
-                  <!-- Gender -->
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">{{ pet_form.gender.label }}</span></label>
-                    {{ pet_form.gender }}
-                    {% if pet_form.gender.errors %}
-                      <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.gender.errors.0 }}</span></label>
-                    {% endif %}
-                  </div>
-                </div>
-
-                <!-- Date of Birth and Adoption Fee Row -->
-                <div class="grid grid-cols-2 gap-4">
-                  <!-- Date of Birth -->
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">{{ pet_form.dob.label }}</span></label>
-                    {{ pet_form.dob }}
-                    {% if pet_form.dob.errors %}
-                      <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.dob.errors.0 }}</span></label>
-                    {% endif %}
-                  </div>
-
-                  <!-- Adoption Fee -->
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">{{ pet_form.adoption_fee.label }}</span></label>
-                    {{ pet_form.adoption_fee }}
-                    {% if pet_form.adoption_fee.errors %}
-                      <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.adoption_fee.errors.0 }}</span></label>
-                    {% endif %}
-                    {% if pet_form.adoption_fee.help_text %}
-                      <label class="label"><span class="label-text-alt">{{ pet_form.adoption_fee.help_text }}</span></label>
-                    {% endif %}
-                  </div>
-                </div>
-
-                <!-- Description -->
-                <div class="form-control">
-                  <label class="label"><span class="label-text font-medium">{{ pet_form.description.label }}</span></label>
-                  {{ pet_form.description }}
-                  {% if pet_form.description.errors %}
-                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.description.errors.0 }}</span></label>
-                  {% endif %}
-                  {% if pet_form.description.help_text %}
-                    <label class="label"><span class="label-text-alt">{{ pet_form.description.help_text }}</span></label>
+                  <label class="label"><span class="label-text font-medium">{{ pet_form.gender.label }}</span></label>
+                  {{ pet_form.gender }}
+                  {% if pet_form.gender.errors %}
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.gender.errors.0 }}</span></label>
                   {% endif %}
                 </div>
               </div>
 
-              <!-- Right Column - Image Upload -->
-              <div class="space-y-4">
-                <h2 class="text-xl font-semibold mb-4">Pet Image</h2>
-
-                <!-- Current Image Preview -->
-                {% if pet.image %}
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">Current Image</span></label>
-                    <div class="card bg-base-200 shadow-sm">
-                      <figure class="px-4 pt-4">
-                        <img src="{{ image_url }}" alt="{{ pet.name }}" class="rounded-xl max-h-64 w-full object-contain" onerror="this.src='{% static 'images/placeholder-pet.png' %}'" />
-                      </figure>
-                      <div class="card-body items-center text-center pt-2">
-                        <p class="text-sm text-base-content/70">Upload a new image to replace this one</p>
-                      </div>
-                    </div>
-                  </div>
-                {% else %}
-                  <div class="alert alert-info">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>No image currently uploaded for this pet</span>
-                  </div>
-                {% endif %}
-
-                <!-- New Image Upload -->
+              <!-- Date of Birth and Adoption Fee Row -->
+              <div class="grid grid-cols-2 gap-4">
+                <!-- Date of Birth -->
                 <div class="form-control">
-                  <label class="label"><span class="label-text font-medium">{{ image_form.pet_image.label }}</span></label>
-                  <div>{{ image_form.pet_image }}</div>
-                  {% if image_form.pet_image.errors %}
-                    <label class="label"><span class="label-text-alt text-red-600">{{ image_form.pet_image.errors.0 }}</span></label>
+                  <label class="label"><span class="label-text font-medium">{{ pet_form.dob.label }}</span></label>
+                  {{ pet_form.dob }}
+                  {% if pet_form.dob.errors %}
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.dob.errors.0 }}</span></label>
                   {% endif %}
                 </div>
 
-                <!-- Image Preview (for newly selected image) -->
-                <div id="imagePreviewContainer" class="hidden">
-                  <label class="label"><span class="label-text font-medium">New Image Preview</span></label>
+                <!-- Adoption Fee -->
+                <div class="form-control">
+                  <label class="label"><span class="label-text font-medium">{{ pet_form.adoption_fee.label }}</span></label>
+                  {{ pet_form.adoption_fee }}
+                  {% if pet_form.adoption_fee.errors %}
+                    <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.adoption_fee.errors.0 }}</span></label>
+                  {% endif %}
+                  {% if pet_form.adoption_fee.help_text %}
+                    <label class="label"><span class="label-text-alt">{{ pet_form.adoption_fee.help_text }}</span></label>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">{{ pet_form.description.label }}</span></label>
+                {{ pet_form.description }}
+                {% if pet_form.description.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.description.errors.0 }}</span></label>
+                {% endif %}
+                {% if pet_form.description.help_text %}
+                  <label class="label"><span class="label-text-alt">{{ pet_form.description.help_text }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Vaccines -->
+              <div class="form-control flex flex-col w-full">
+                {{ pet_form.vaccines.label_tag }}
+                <div class="grid grid-cols-2 gap-2 mt-2 w-full">
+                  {% for checkbox in pet_form.vaccines %}
+                    <label class="flex items-center mr-4 mb-2">
+                      {{ checkbox.tag }}
+                      <span class="ml-2">{{ checkbox.choice_label }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+                {% if pet_form.vaccines.help_text %}
+                  <label class="label"><span class="label-text-alt text-primary">{{ pet_form.vaccines.help_text }}</span></label>
+                {% endif %}
+                {% if pet_form.vaccines.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.vaccines.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Right Column - Image Upload -->
+            <div class="space-y-4">
+              <h2 class="text-xl font-semibold mb-4">Pet Image</h2>
+
+              <!-- Current Image Preview -->
+              {% if pet.image %}
+                <div class="form-control">
+                  <label class="label"><span class="label-text font-medium">Current Image</span></label>
                   <div class="card bg-base-200 shadow-sm">
                     <figure class="px-4 pt-4">
-                      <img id="imagePreview" src="" alt="New image preview" class="rounded-xl max-h-64 w-full object-contain" />
+                      <img src="{{ image_url }}" alt="{{ pet.name }}" class="rounded-xl max-h-64 w-full object-contain" onerror="this.src='{% static 'images/placeholder-pet.png' %}'" />
                     </figure>
+                    <div class="card-body items-center text-center pt-2">
+                      <p class="text-sm text-base-content/70">Upload a new image to replace this one</p>
+                    </div>
                   </div>
                 </div>
+              {% else %}
+                <div class="alert alert-info">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span>No image currently uploaded for this pet</span>
+                </div>
+              {% endif %}
 
+              <!-- New Image Upload -->
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">{{ image_form.pet_image.label }}</span></label>
+                <div>{{ image_form.pet_image }}</div>
+                {% if image_form.pet_image.errors %}
+                  <label class="label"><span class="label-text-alt text-red-600">{{ image_form.pet_image.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+
+              <!-- Image Preview (for newly selected image) -->
+              <div id="imagePreviewContainer" class="hidden">
+                <label class="label"><span class="label-text font-medium">New Image Preview</span></label>
+                <div class="card bg-base-200 shadow-sm">
+                  <figure class="px-4 pt-4">
+                    <img id="imagePreview" src="" alt="New image preview" class="rounded-xl max-h-64 w-full object-contain" />
+                  </figure>
+                </div>
               </div>
             </div>
+          </div>
 
-            <!-- Form Actions -->
-            <div class="divider"></div>
-            <div class="flex flex-col sm:flex-row gap-3 justify-end">
-              <a href="{% url 'my_pets' %}" class="btn btn-ghost btn-outline">Cancel</a>
-              <button type="submit" class="btn btn-primary text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>Save Changes
-              </button>
-            </div>
-          </form>
-        </div>
+          <!-- Form Actions -->
+          <div class="divider"></div>
+          <div class="flex flex-col sm:flex-row gap-3 justify-end">
+            <a href="{% url 'my_pets' %}" class="btn btn-ghost btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>Save Changes
+            </button>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
 
   <!-- Image Preview Script -->
   <script>

@@ -1,6 +1,8 @@
 # pets/forms.py
 from datetime import date
 from django import forms
+
+from vaccines.models import Vaccine
 from .models import Pet, PetImage
 
 
@@ -129,7 +131,7 @@ class RegisterPetForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = [
-            "name", "species", "breed", "color", "weight", "gender", "description", "adoption_fee", "dob"
+            "name", "species", "breed", "color", "weight", "gender", "description", "adoption_fee", "dob", "vaccines"
         ]
         widgets = {
             "name": forms.TextInput(attrs={
@@ -171,6 +173,9 @@ class RegisterPetForm(forms.ModelForm):
                 "class": "textarea textarea-bordered textarea-primary h-32 w-full",
                 "placeholder": "Tell us about this pet's personality, habits, medical history, and any special needs...",
             }),
+            "vaccines": forms.CheckboxSelectMultiple(attrs={
+                "class": "checkbox checkbox-primary mr-2 mb-2 flex items-center text-white",
+            }),
         }
         labels = {
             "name": "Pet Name *",
@@ -182,6 +187,7 @@ class RegisterPetForm(forms.ModelForm):
             "adoption_fee": "Adoption Fee ($)",
             "dob": "Date of Birth *",
             "description": "Description",
+            "vaccines": "Vaccinations (Multiple selections allowed)",
         }
         help_texts = {
             "adoption_fee": "Leave empty or set to 0 if free adoption",
@@ -202,6 +208,7 @@ class RegisterPetForm(forms.ModelForm):
             instance.status = Pet.PetStatus.AV  # enforce default
         if commit:
             instance.save()
+            self.save_m2m()
         return instance
 
 
