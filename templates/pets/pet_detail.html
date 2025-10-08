@@ -36,7 +36,10 @@
         <!-- Pet Info Card -->
         <div class="card bg-base-100 shadow-xl">
           <div class="card-body">
-            <h1 class="card-title text-4xl font-bold mb-4">{{ pet.name }}</h1>
+            <div class="flex justify-between items-center mb-4">
+              <h1 class="card-title text-4xl font-bold mb-4">{{ pet.name }}</h1>
+              <div class="badge badge-lg {% if pet.status == 'Available' %}badge-success{% elif pet.status == 'Pending' %}badge-warning{% else %}badge-error{% endif %} mb-4">{{ pet.status }}</div>
+            </div>
 
             <div class="flex flex-col gap-4">
               <div class="flex items-center gap-3">
@@ -99,7 +102,7 @@
               </div>
             </div>
 
-            {% if pet.status == 'Available' %}
+            {% if pet.status == 'Available' and current_user != pet.user %}
               <div class="card-actions justify-end mt-6">
                 <a href="{% url 'apply_adoption_pet' pet.id %}" class="btn btn-primary btn-lg w-full text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
