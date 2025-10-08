@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Jaikae - Vaccines
+{% endblock %}
+
+{% block content %}
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-3xl font-bold mb-2">Vaccines</h1>
+        <p class="text-base-content/70">
+          Manage all available vaccines for pets
+        </p>
+      </div>
+      <a href="{% url 'add_vaccine' %}" class="btn btn-primary text-white">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+        Add New Vaccine
+      </a>
+    </div>
+
+    <!-- Vaccines Table -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body p-0">
+        <div class="overflow-x-auto">
+          <table class="table table-zebra">
+            <thead>
+              <tr>
+                <th class="bg-primary text-white">Name</th>
+                <th class="bg-primary text-white">Description</th>
+                <th class="bg-primary text-white">Protects Against</th>
+                <th class="bg-primary text-white text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if vaccines %}
+                {% for vaccine in vaccines %}
+                  <tr>
+                    <td class="font-semibold">{{ vaccine.name }}</td>
+                    <td>
+                      {% if vaccine.description %}
+                        {{ vaccine.description|truncatewords:15 }}
+                      {% else %}
+                        <span class="text-base-content/50 italic">
+                          No description
+                        </span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if vaccine.protects_against %}
+                        {{ vaccine.protects_against|truncatewords:10 }}
+                      {% else %}
+                        <span class="text-base-content/50 italic">N/A</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <div class="flex justify-center gap-2">
+                        <!-- Edit Button -->
+                        <a
+                          href="{% url 'edit_vaccine' vaccine.id %}"
+                          class="btn btn-sm btn-info text-white"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                          Edit
+                        </a>
+
+                        <!-- Delete Button -->
+                        <button
+                          onclick="confirmDelete{{ vaccine.id }}.showModal()"
+                          class="btn btn-sm btn-error text-white"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Delete Confirmation Modal -->
+                  <dialog
+                    id="confirmDelete{{ vaccine.id }}"
+                    class="modal"
+                  >
+                    <div class="modal-box">
+                      <h3 class="font-bold text-lg">Confirm Deletion</h3>
+                      <p class="py-4">
+                        Are you sure you want to delete
+                        <span class="font-semibold text-primary">
+                          {{ vaccine.name }}
+                        </span>
+                        ? This action cannot be undone.
+                      </p>
+                      <div class="modal-action">
+                        <form method="dialog">
+                          <button
+                            class="btn btn-ghost btn-outline"
+                            id="cancelBtn{{ vaccine.id }}"
+                          >
+                            Cancel
+                          </button>
+                        </form>
+                        <form
+                          method="post"
+                          action="{% url 'delete_vaccine' vaccine.id %}"
+                          onsubmit="handleDeleteSubmit(event, {{ vaccine.id }})"
+                        >
+                          {% csrf_token %}
+                          <button
+                            type="submit"
+                            class="btn btn-error text-white"
+                            id="deleteBtn{{ vaccine.id }}"
+                          >
+                            <span class="delete-text">Delete</span>
+                            <span
+                              class="loading loading-spinner loading-sm hidden"
+                            ></span>
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                    <form method="dialog" class="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="4" class="text-center py-8">
+                    <div class="flex flex-col items-center gap-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-16 w-16 text-base-content/20"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                        />
+                      </svg>
+                      <p class="text-lg text-base-content/70">
+                        No vaccines available
+                      </p>
+                      <a
+                        href="{% url 'add_vaccine' %}"
+                        class="btn btn-primary text-white btn-sm"
+                      >
+                        Add Your First Vaccine
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function handleDeleteSubmit(event, vaccineId) {
+      const deleteBtn = document.getElementById(`deleteBtn${vaccineId}`)
+      const cancelBtn = document.getElementById(`cancelBtn${vaccineId}`)
+      const deleteText = deleteBtn.querySelector('.delete-text')
+      const spinner = deleteBtn.querySelector('.loading')
+
+      // Disable buttons and show loading state
+      deleteBtn.disabled = true
+      cancelBtn.disabled = true
+      deleteText.classList.add('hidden')
+      spinner.classList.remove('hidden')
+    }
+  </script>
+{% endblock %}

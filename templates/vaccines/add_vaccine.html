@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Jaikae - Vaccines
+{% endblock %}
+
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+      <h1 class="text-5xl font-bold text-primary mb-4">💉 Vaccine List</h1>
+      <p class="text-base-content/70 text-lg">Keep your pets healthy with up-to-date vaccinations</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Example Vaccine Card -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title text-primary">Rabies Vaccine</h2>
+          <p class="text-base-content/70">Protects against rabies, a deadly viral disease.</p>
+          <div class="badge badge-secondary mt-4">Protects Against: Rabies</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
