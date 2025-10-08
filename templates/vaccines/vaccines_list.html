@@ -72,7 +72,7 @@
                         <!-- Edit Button -->
                         <a
                           href="{% url 'edit_vaccine' vaccine.id %}"
-                          class="btn btn-sm btn-info text-white"
+                          class="btn btn-sm btn-accent text-black"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +94,7 @@
                         <!-- Delete Button -->
                         <button
                           onclick="confirmDelete{{ vaccine.id }}.showModal()"
-                          class="btn btn-sm btn-error text-white"
+                          class="btn btn-sm bg-red-600 text-white"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -147,7 +147,7 @@
                           {% csrf_token %}
                           <button
                             type="submit"
-                            class="btn btn-error text-white"
+                            class="btn bg-red-600 text-white"
                             id="deleteBtn{{ vaccine.id }}"
                           >
                             <span class="delete-text">Delete</span>
