@@ -123,11 +123,15 @@ class PetDetailView(View):
     def get(self, request, pet_id):
         try:
             pet = Pet.objects.get(id=pet_id)
+            image_url = None
+            if getattr(pet, "image", None):
+                image_url = generate_presigned_url(str(pet.image.pet_image))
         except Pet.DoesNotExist:
             return render(request, "404.html", status=404)
 
         context = {
             "pet": pet,
+            "image_url": image_url,
         }
         return render(request, "pets/pet_detail.html", context)
 
