@@ -158,6 +158,8 @@ class RegisterPetView(View):
                 pet.user = user_profile   # attach user
                 pet.save()
 
+                pet_form.save_m2m()
+
                 # Save image and link to pet
                 pet_image = image_form.save(commit=False)
                 pet_image.pet = pet
@@ -257,6 +259,7 @@ class EditPetView(View):
             request.POST, request.FILES, instance=getattr(pet, "image", None))
 
         if pet_form.is_valid() and image_form.is_valid():
+            print(pet_form.cleaned_data)
             with transaction.atomic():
                 pet_form.save()
                 image_form.save()

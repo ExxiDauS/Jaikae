@@ -145,6 +145,25 @@
               {% endif %}
             </div>
 
+            <!-- Vaccines -->
+            <div class="form-control flex flex-col w-full">
+              {{ pet_form.vaccines.label_tag }}
+              <div class="grid grid-cols-2 gap-2 mt-2 w-full">
+                {% for checkbox in pet_form.vaccines %}
+                  <label class="flex items-center mr-4 mb-2">
+                    {{ checkbox.tag }}
+                    <span class="ml-2">{{ checkbox.choice_label }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+              {% if pet_form.vaccines.help_text %}
+                <label class="label"><span class="label-text-alt text-primary">{{ pet_form.vaccines.help_text }}</span></label>
+              {% endif %}
+              {% if pet_form.vaccines.errors %}
+                <label class="label"><span class="label-text-alt text-red-600">{{ pet_form.vaccines.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row gap-4 justify-end pt-6">
               <a href="{% url 'pets' %}" class="btn btn-outline btn-lg w-full sm:w-auto">Cancel</a>
