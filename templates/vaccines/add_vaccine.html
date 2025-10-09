@@ -20,7 +20,7 @@
               {{ field }}
 
               {% if field.errors %}
-                <p class="text-error text-sm mt-1">{{ field.errors.as_text }}</p>
+                <p class="text-red-600 text-sm mt-1">{{ field.errors.as_text }}</p>
               {% endif %}
             </div>
           {% endfor %}

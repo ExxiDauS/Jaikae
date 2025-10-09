@@ -12,7 +12,7 @@ class VaccineForm(forms.ModelForm):
             'protects_against': forms.TextInput(attrs={'class': 'input input-bordered w-full'}),
         }
         labels = {
-            'name': 'Vaccine Name',
+            'name': 'Vaccine Name *',
             'description': 'Description',
             'protects_against': 'Protects Against',
         }

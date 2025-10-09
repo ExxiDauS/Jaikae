@@ -27,22 +27,20 @@ class EditVaccineView(View):
             vaccine = Vaccine.objects.get(id=vaccine_id)
         except Vaccine.DoesNotExist:
             return render(request, "404.html", status=404)
-        return render(request, "vaccines/edit_vaccine.html", {"vaccine": vaccine})
+        form = VaccineForm(instance=vaccine)
+        return render(request, "vaccines/edit_vaccine.html", {"form": form})
 
     def post(self, request, vaccine_id):
         try:
             vaccine = Vaccine.objects.get(id=vaccine_id)
         except Vaccine.DoesNotExist:
             return render(request, "404.html", status=404)
-        
-        name = request.POST.get("name")
-        description = request.POST.get("description")
-        if name:
-            vaccine.name = name
-            vaccine.description = description
-            vaccine.save()
-            return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all(), "success": "Vaccine updated successfully!"})
-        return render(request, "vaccines/edit_vaccine.html", {"vaccine": vaccine, "error": "Name is required."})
+
+        form = VaccineForm(request.POST, instance=vaccine)
+        if form.is_valid():
+            form.save()
+            return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all()})
+        return render(request, "vaccines/edit_vaccine.html", {"form": form})
 
 class DeleteVaccineView(View):
     def post(self, request, vaccine_id):
