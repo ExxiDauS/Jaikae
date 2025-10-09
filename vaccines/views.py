@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from .models import Vaccine
+from .forms import VaccineForm
 
 # Create your views here.
 class VaccineListView(View):
@@ -10,15 +11,15 @@ class VaccineListView(View):
 
 class AddVaccineView(View):
     def get(self, request):
-        return render(request, "vaccines/add_vaccine.html")
+        form = VaccineForm()
+        return render(request, "vaccines/add_vaccine.html", {"form": form})
 
     def post(self, request):
-        name = request.POST.get("name")
-        description = request.POST.get("description")
-        if name:
-            Vaccine.objects.create(name=name, description=description)
-            return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all(), "success": "Vaccine added successfully!"})
-        return render(request, "vaccines/add_vaccine.html", {"error": "Name is required."})
+        form = VaccineForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all()})
+        return render(request, "vaccines/add_vaccine.html", {"form": form})
     
 class EditVaccineView(View):
     def get(self, request, vaccine_id):
