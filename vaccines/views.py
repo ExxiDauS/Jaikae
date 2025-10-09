@@ -47,6 +47,6 @@ class DeleteVaccineView(View):
         try:
             vaccine = Vaccine.objects.get(id=vaccine_id)
             vaccine.delete()
-            return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all(), "success": "Vaccine deleted successfully!"})
+            return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all()})
         except Vaccine.DoesNotExist:
             return render(request, "404.html", status=404)
