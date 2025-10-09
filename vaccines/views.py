@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from .models import Vaccine
 from .forms import VaccineForm
+from django.db import transaction
 
 # Create your views here.
 class VaccineListView(View):
@@ -17,7 +18,8 @@ class AddVaccineView(View):
     def post(self, request):
         form = VaccineForm(request.POST)
         if form.is_valid():
-            form.save()
+            with transaction.atomic():
+                form.save()
             return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all()})
         return render(request, "vaccines/add_vaccine.html", {"form": form})
     
@@ -38,7 +40,8 @@ class EditVaccineView(View):
 
         form = VaccineForm(request.POST, instance=vaccine)
         if form.is_valid():
-            form.save()
+            with transaction.atomic():
+                form.save()
             return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all()})
         return render(request, "vaccines/edit_vaccine.html", {"form": form})
 
@@ -46,7 +49,8 @@ class DeleteVaccineView(View):
     def post(self, request, vaccine_id):
         try:
             vaccine = Vaccine.objects.get(id=vaccine_id)
-            vaccine.delete()
+            with transaction.atomic():
+                vaccine.delete()
             return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all()})
         except Vaccine.DoesNotExist:
             return render(request, "404.html", status=404)
