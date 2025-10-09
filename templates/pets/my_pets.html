@@ -92,7 +92,7 @@
                 <div class="flex gap-2">
                   <a href="{% url 'pet_detail' item.pet.id %}" class="btn btn-primary btn-sm text-white">Learn More</a>
                   <a href="{% url 'edit_pet' item.pet.id %}" class="btn btn-secondary btn-sm">Edit</a>
-                  <button onclick="confirmDelete{{ item.pet.id }}.showModal()" class="btn btn-error btn-sm">Delete</button>
+                  <button onclick="confirmDelete{{ item.pet.id }}.showModal()" class="btn bg-red-600 text-white btn-sm">Delete</button>
                 </div>
               </div>
             </div>
@@ -111,7 +111,7 @@
                 </form>
                 <form method="post" action="{% url 'delete_pet' item.pet.id %}" onsubmit="handleDeleteSubmit(event, {{ item.pet.id }})">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-error" id="deleteBtn{{ item.pet.id }}">
+                  <button type="submit" class="btn bg-red-600 text-white" id="deleteBtn{{ item.pet.id }}">
                     <span class="delete-text">Delete</span>
                     <span class="loading loading-spinner loading-sm hidden"></span>
                   </button>
