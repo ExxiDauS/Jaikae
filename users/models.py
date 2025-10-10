@@ -30,5 +30,9 @@ class User(models.Model):
     def get_profile_image_url(self):
         """Get profile image URL - automatically generates presigned URL with MinIO."""
         if self.profile_image:
+            url = self.profile_image.url
+            fixed = url.replace("https://https://", "https://", 1)
+            if fixed != url:
+                return fixed
             return self.profile_image.url
-        return None
+        return None 

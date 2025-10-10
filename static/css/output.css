@@ -2011,9 +2011,6 @@
   .h-full {
     height: 100%;
   }
-  .max-h-42 {
-    max-height: calc(var(--spacing) * 42);
-  }
   .max-h-64 {
     max-height: calc(var(--spacing) * 64);
   }
@@ -2217,9 +2214,6 @@
   }
   .overflow-x-auto {
     overflow-x: auto;
-  }
-  .overflow-y-auto {
-    overflow-y: auto;
   }
   .menu-md {
     :where(li:not(.menu-title) > *:not(ul, details, .menu-title)), :where(li:not(.menu-title) > details > summary:not(.menu-title)) {
