@@ -22,3 +22,4 @@ class LandingPageView(View):
             })
 
         return render(request, "index.html", {"pets": pet_data})
+    
