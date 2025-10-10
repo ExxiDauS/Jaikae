@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adoption Application {{ status }}</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+                   'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .email-container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #e5e5e5;
+    }
+    .header h1 {
+      margin: 0;
+      color: #1a1a1a;
+      font-size: 28px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .status-approved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .status-rejected {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .pet-info {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .pet-info h2 {
+      margin-top: 0;
+      color: #1a1a1a;
+      font-size: 20px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #666;
+    }
+    .info-value {
+      color: #1a1a1a;
+    }
+    .message-box {
+      background-color: #f8f9fa;
+      border-left: 4px solid #007bff;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .message-box.success {
+      border-left-color: #28a745;
+      background-color: #d4edda;
+    }
+    .message-box.danger {
+      border-left-color: #dc3545;
+      background-color: #f8d7da;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 6px;
+      margin: 20px 0;
+      font-weight: 600;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #e5e5e5;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+    }
+    .next-steps {
+      margin: 25px 0;
+    }
+    .next-steps h3 {
+      color: #1a1a1a;
+      margin-bottom: 15px;
+    }
+    .next-steps ul {
+      list-style: none;
+      padding: 0;
+    }
+    .next-steps li {
+      padding: 10px 0;
+      padding-left: 25px;
+      position: relative;
+    }
+    .next-steps li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #28a745;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>Adoption Application Update</h1>
+      <span class="status-badge status-{{ status|lower }}">
+        {% if status == 'Approved' %}✓ Approved{% else %}✗ Not Approved{% endif %}
+      </span>
+    </div>
+
+    <p>Dear {{ application.user.get_full_name|default:application.user.username }},</p>
+
+    {% if status == 'Approved' %}
+    <div class="message-box success">
+      <p><strong>Congratulations!</strong> Your adoption application for 
+      <strong>{{ application.pet.name }}</strong> has been approved!</p>
+    </div>
+
+    <div class="pet-info">
+      <h2>🐾 Pet Details</h2>
+      <div class="info-row">
+        <span class="info-label">Name:</span>
+        <span class="info-value">{{ application.pet.name }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Species:</span>
+        <span class="info-value">{{ application.pet.species }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Breed:</span>
+        <span class="info-value">{{ application.pet.breed }}</span>
+      </div>
+      {% if application.pet.age %}
+      <div class="info-row">
+        <span class="info-label">Age:</span>
+        <span class="info-value">{{ application.pet.age }} years old</span>
+      </div>
+      {% endif %}
+      <div class="info-row">
+        <span class="info-label">Application Date:</span>
+        <span class="info-value">
+          {{ application.application_date|date:"F d, Y" }}
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Approved Date:</span>
+        <span class="info-value">
+          {{ application.approved_date|date:"F d, Y" }}
+        </span>
+      </div>
+    </div>
+
+    <div class="next-steps">
+      <h3>📋 Next Steps</h3>
+      <ul>
+        <li>The pet owner will contact you within 2-3 business days</li>
+        <li>Prepare your home for {{ application.pet.name }}'s arrival</li>
+        <li>Gather necessary supplies (food, bed, toys, etc.)</li>
+        <li>Schedule a meet-and-greet if needed</li>
+        <li>Review adoption contract and finalize paperwork</li>
+      </ul>
+    </div>
+
+    <p>
+      We're excited for you and {{ application.pet.name }} to start this 
+      journey together! If you have any questions, please don't hesitate 
+      to reach out.
+    </p>
+
+    {% else %}
+    <div class="message-box danger">
+      <p>We regret to inform you that your adoption application for 
+      <strong>{{ application.pet.name }}</strong> was not approved at 
+      this time.</p>
+    </div>
+
+    <div class="pet-info">
+      <h2>Application Details</h2>
+      <div class="info-row">
+        <span class="info-label">Pet Name:</span>
+        <span class="info-value">{{ application.pet.name }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Application Date:</span>
+        <span class="info-value">
+          {{ application.application_date|date:"F d, Y" }}
+        </span>
+      </div>
+    </div>
+
+    <p>
+      While we understand this may be disappointing, please know that 
+      finding the right match is important for both the pet and the adopter. 
+      There may be many reasons why an application isn't approved, and it 
+      doesn't reflect negatively on you as a potential pet owner.
+    </p>
+
+    <div class="next-steps">
+      <h3>What You Can Do</h3>
+      <ul>
+        <li>Browse other available pets that might be a better match</li>
+        <li>Contact us if you have questions about your application</li>
+        <li>Consider applying for other pets in the future</li>
+      </ul>
+    </div>
+    {% endif %}
+
+    <center>
+      <a href="{{ site_url }}{% url 'adoption_application_detail' application.id %}" 
+         class="button">
+        View Application Details
+      </a>
+    </center>
+
+    <div class="footer">
+      <p>
+        <strong>Need Help?</strong><br>
+        Contact us at {{ contact_email|default:"support@petadoption.com" }}
+      </p>
+      <p style="margin-top: 15px; font-size: 12px; color: #999;">
+        This is an automated email. Please do not reply directly to this message.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

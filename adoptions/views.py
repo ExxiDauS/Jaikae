@@ -11,6 +11,7 @@ from .models import AdoptionApplication
 from .forms import AdoptionApplicationForm
 from pets.models import Pet
 from users.models import User
+from jaikae_project.utils import send_application_status_email
 
 
 @login_required
@@ -101,10 +102,42 @@ def approve_application(request, pk):
         application.pet.status = "Adopted"
         application.pet.save()
 
+        if send_application_status_email(application, request):
+            messages.success(
+                request,
+                f"Application approved and email sent to {application.user.email}",
+            )
+        else:
+            messages.warning(request, "Application approved but email failed to send.")
+
         # Reject other pending applications for this pet
-        AdoptionApplication.objects.filter(
+        other_applications = AdoptionApplication.objects.filter(
             pet=application.pet, status="Pending"
-        ).exclude(id=application.id).update(status="Rejected")
+        ).exclude(id=application.id)
+
+        # Reject and send emails to other applicants
+        rejected_count = 0
+        email_sent_count = 0
+        email_failed_count = 0
+
+        for other_app in other_applications:
+            other_app.status = "Rejected"
+            other_app.save()
+            rejected_count += 1
+
+            # Send rejection email
+            if send_application_status_email(other_app, request):
+                email_sent_count += 1
+            else:
+                email_failed_count += 1
+
+        # Show summary message
+        if rejected_count > 0:
+            messages.info(
+                request,
+                f"{rejected_count} other application(s) automatically rejected. "
+                f"Emails sent: {email_sent_count}, Failed: {email_failed_count}",
+            )
 
         messages.success(request, "Application approved!")
         return redirect("manage_applications")
@@ -128,6 +161,13 @@ def reject_application(request, pk):
 
         messages.info(request, "Application rejected.")
         return redirect("manage_applications")
+
+    if send_application_status_email(application, request):
+        messages.success(
+            request, f"Application rejected and email sent to {application.user.email}"
+        )
+    else:
+        messages.warning(request, "Application rejected but email failed to send.")
 
     return render(
         request,
