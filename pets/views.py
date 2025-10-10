@@ -123,11 +123,17 @@ class PetDetailView(View):
     def get(self, request, pet_id):
         try:
             pet = Pet.objects.get(id=pet_id)
+            image_url = None
+            if getattr(pet, "image", None):
+                image_url = generate_presigned_url(str(pet.image.pet_image))
+            current_user = User.objects.get(auth_user=request.user)
         except Pet.DoesNotExist:
             return render(request, "404.html", status=404)
 
         context = {
             "pet": pet,
+            "image_url": image_url,
+            "current_user": current_user,
         }
         return render(request, "pets/pet_detail.html", context)
 
@@ -157,6 +163,8 @@ class RegisterPetView(View):
                 pet = pet_form.save(commit=False)
                 pet.user = user_profile   # attach user
                 pet.save()
+
+                pet_form.save_m2m()
 
                 # Save image and link to pet
                 pet_image = image_form.save(commit=False)
@@ -257,6 +265,7 @@ class EditPetView(View):
             request.POST, request.FILES, instance=getattr(pet, "image", None))
 
         if pet_form.is_valid() and image_form.is_valid():
+            print(pet_form.cleaned_data)
             with transaction.atomic():
                 pet_form.save()
                 image_form.save()

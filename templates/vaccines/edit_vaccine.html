@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Jaikae - Edit Vaccine
+{% endblock %}
+
+{% block content %}
+  <div class="flex justify-center items-center min-h-[80vh] bg-base-200">
+    <div class="card w-full max-w-lg shadow-xl bg-base-100">
+      <div class="card-body">
+        <h2 class="card-title text-3xl font-bold text-primary mb-2">Edit {{ form.instance.name }}</h2>
+        <p class="text-sm text-base-content/70 mb-4">Update the form below to edit the vaccine record.</p>
+
+        <form method="POST" novalidate class="form-control space-y-4 mt-2">
+          {% csrf_token %}
+
+          {% for field in form %}
+            <div>
+              <label class="label"><span class="label-text font-semibold">{{ field.label }}</span></label>
+              {{ field }}
+
+              {% if field.errors %}
+                <p class="text-red-600 text-sm mt-1">{{ field.errors.as_text }}</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          <div class="card-actions justify-end mt-6 pt-4 border-t border-base-300">
+            <a href="{% url 'vaccines' %}" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary text-white">Save Vaccine</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

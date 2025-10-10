@@ -35,6 +35,53 @@ services:
     networks:
       - app-network
 
+  web-app-1:
+    image: jaikae-app:latest
+    restart: always
+    ports:
+      - "8001:8000"
+    environment:
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_STORAGE_BUCKET_NAME: ${AWS_STORAGE_BUCKET_NAME}
+      AWS_S3_ENDPOINT_URL: ${AWS_S3_ENDPOINT_URL}
+      MINIO_ACCESS_URL: ${MINIO_ACCESS_URL}
+    networks:
+      - app-network
+
+  web-app-2:
+    image: jaikae-app:latest
+    restart: always
+    ports:
+      - "8002:8000"
+    environment:
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_STORAGE_BUCKET_NAME: ${AWS_STORAGE_BUCKET_NAME}
+      AWS_S3_ENDPOINT_URL: ${AWS_S3_ENDPOINT_URL}
+      MINIO_ACCESS_URL: ${MINIO_ACCESS_URL}
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - app-network
+    restart: unless-stopped
+
   db:
     image: postgres
     restart: always
@@ -57,6 +104,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BROWSER_REDIRECT_URL: https://exxidaus-bucket.ucnil.dev:443/minio/ui
     volumes:
       - ./volume:/data
     command: server /data --console-address ":9001"
@@ -65,6 +113,7 @@ services:
       - app-network
 volumes:
   db_data:
+  grafana-data:
 
 networks:
   app-network:

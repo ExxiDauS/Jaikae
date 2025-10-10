@@ -1,9 +1,155 @@
 {% extends 'base.html' %}
 
+{% block title %}
+  Jaikae - {{ pet.name }}
+{% endblock %}
+
 {% block content %}
-  <h1>{{ pet.name }}</h1>
-  <p>Age: {{ pet.age }}</p>
-  <p>Breed: {{ pet.breed }}</p>
-  <p>Description: {{ pet.description }}</p>
-  <a href="{% url 'apply_adoption_pet' pet.id %}"><button type="submit" class="btn btn-primary text-white">Adopt</button></a>
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="btn btn-ghost btn-sm gap-2 text-lg mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>Back to Pets
+    </a>
+
+    <div class="grid grid-cols-2">
+      <!-- Left Side: Pet Image -->
+      <div class="col-span-1 mr-4">
+        <div class="card bg-base-100 shadow-xl h-full">
+          <figure class="h-full">
+            {% if image_url %}
+              <img src="{{ image_url }}" alt="{{ pet.name }}" class="w-full h-full object-contain rounded-2xl" />
+            {% else %}
+              <div class="w-full h-full flex items-center justify-center bg-base-200 rounded-2xl min-h-[400px]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-32 w-32 text-base-content opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            {% endif %}
+          </figure>
+        </div>
+      </div>
+
+      <!-- Right Side: Pet Info and Vaccines -->
+      <div class="col-span-1 flex flex-col gap-4 justify-between ml-4">
+        <!-- Pet Info Card -->
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <div class="flex justify-between items-center mb-4">
+              <h1 class="card-title text-4xl font-bold mb-4">{{ pet.name }}</h1>
+              <div class="badge badge-lg {% if pet.status == 'Available' %}badge-success{% elif pet.status == 'Pending' %}badge-warning{% else %}badge-error{% endif %} mb-4">{{ pet.status }}</div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="badge badge-secondary badge-lg">Age</div>
+                <span class="text-lg">{{ pet.age.0 }} years {{ pet.age.1 }} months</span>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="badge badge-secondary badge-lg">Gender</div>
+                {% if pet.gender %}
+                  <span class="text-lg">{{ pet.gender }}</span>
+                {% else %}
+                  <span class="text-lg text-base-content/70 italic">Not specified</span>
+                {% endif %}
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="badge badge-secondary badge-lg">Species</div>
+                {% if pet.species %}
+                  <span class="text-lg">{{ pet.species }}</span>
+                {% else %}
+                  <span class="text-lg text-base-content/70 italic">Not specified</span>
+                {% endif %}
+
+                <div class="badge badge-secondary badge-lg">Breed</div>
+                {% if pet.breed %}
+                  <span class="text-lg">{{ pet.breed }}</span>
+                {% else %}
+                  <span class="text-lg text-base-content/70 italic">Not specified</span>
+                {% endif %}
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="badge badge-secondary badge-lg">Color</div>
+                {% if pet.color %}
+                  <span class="text-lg">{{ pet.color }}</span>
+                {% else %}
+                  <span class="text-lg text-base-content/70 italic">Not specified</span>
+                {% endif %}
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="badge badge-secondary badge-lg">Weight</div>
+                {% if pet.weight %}
+                  <span class="text-lg">{{ pet.weight }} kg.</span>
+                {% else %}
+                  <span class="text-lg text-base-content/70 italic">Not specified</span>
+                {% endif %}
+              </div>
+
+              <div class="divider"></div>
+
+              <div>
+                <h3 class="font-semibold text-lg mb-2">Description</h3>
+                {% if pet.description %}
+                  <p class="text-base-content/80">{{ pet.description }}</p>
+                {% else %}
+                  <p class="text-base-content/70 italic">No description provided.</p>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if pet.status == 'Available' and current_user != pet.user %}
+              <div class="card-actions justify-end mt-6">
+                <a href="{% url 'apply_adoption_pet' pet.id %}" class="btn btn-primary btn-lg w-full text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>Adopt {{ pet.name }}
+                  {% if pet.adoption_fee > 0 %}
+                    - ${{ pet.adoption_fee }}
+                  {% else %}
+                    - Free
+                  {% endif %}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Vaccines Info Card -->
+        <div class="card bg-base-100 shadow-xl h-full">
+          <div class="card-body">
+            <h2 class="card-title text-2xl">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>Vaccination History
+            </h2>
+
+            {% if pet.vaccines.all %}
+              <div class="flex flex-col gap-2 mt-4">
+                {% for vaccine in pet.vaccines.all %}
+                  <div class="badge badge-success badge-lg gap-2 text-xs whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="truncate">{{ vaccine.name }}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="alert alert-warning mt-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>No vaccination records available</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
