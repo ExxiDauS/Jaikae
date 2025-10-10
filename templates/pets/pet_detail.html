@@ -38,7 +38,10 @@
           <div class="card-body">
             <div class="flex justify-between items-center mb-4">
               <h1 class="card-title text-4xl font-bold mb-4">{{ pet.name }}</h1>
-              <div class="badge badge-lg {% if pet.status == 'Available' %}badge-success{% elif pet.status == 'Pending' %}badge-warning{% else %}badge-error{% endif %} mb-4">{{ pet.status }}</div>
+              <div class="flex items-start gap-4">
+                <a href="{% url 'download_pet_pdf' pet.id %}" class="btn btn-primary btn-sm text-white">Download PDF</a>
+                <div class="badge badge-lg {% if pet.status == 'Available' %}badge-success{% elif pet.status == 'Pending' %}badge-warning{% else %}badge-error{% endif %} mb-4">{{ pet.status }}</div>
+              </div>
             </div>
 
             <div class="flex flex-col gap-4">

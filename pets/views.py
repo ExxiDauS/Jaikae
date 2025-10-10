@@ -1,13 +1,16 @@
 from datetime import date, timedelta
 from django.shortcuts import redirect, render
 from django.views import View
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Pet
 from .forms import PetFilterForm, RegisterPetForm, PetImageForm
 from django.db import transaction
 from users.models import User
 from jaikae_project.utils import generate_presigned_url
 from django.core.paginator import Paginator
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+import io
 
 
 class PetsView(View):
@@ -307,6 +310,37 @@ class DeletePetView(View):
         with transaction.atomic():
             pet.delete()
         return redirect("my_pets")
+
+
+class PetPDFView(View):
+    """View for downloading pet details as a PDF."""
+
+    def get(self, request, pet_id):
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+
+        try:
+            pet = Pet.objects.get(id=pet_id)
+        except Pet.DoesNotExist:
+            return render(request, "404.html", status=404)
+
+        # Render pet details to HTML
+        html_string = render_to_string(
+            'pets/pet_pdf.html', {'pet': pet, "now": date.today()})
+
+        # Convert HTML to PDF
+        result = io.BytesIO()
+        pdf = pisa.pisaDocument(io.BytesIO(
+            html_string.encode("UTF-8")), result)
+
+        if not pdf.err:
+            respone = HttpResponse(
+                result.getvalue(), content_type='application/pdf')
+            file_name = f"{pet.name}_details.pdf"
+            respone['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            return respone
+
+        return HttpResponse("Error generating PDF", status=500)
 
 
 def get_breeds(request):

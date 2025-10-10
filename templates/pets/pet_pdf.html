@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Pet Profile - {{ pet.name }}</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 2cm;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        color: #1f2937;
+        line-height: 1.6;
+        font-size: 12px;
+        background-color: #ffffff;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #3b82f6;
+      }
+
+      .header h1 {
+        color: #111827;
+        margin: 0 0 8px 0;
+        font-size: 24px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 13px;
+      }
+
+      .status-Available {
+        background-color: #d1fae5;
+        color: #065f46;
+      }
+
+      .status-Pending {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+
+      .status-Adopted {
+        background-color: #fee2e2;
+        color: #991b1b;
+      }
+
+      .section {
+        margin-bottom: 25px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: bold;
+        border-bottom: 2px solid #3b82f6;
+        padding-bottom: 5px;
+        margin-bottom: 12px;
+      }
+
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .info-table td {
+        padding: 6px 8px;
+        vertical-align: top;
+      }
+
+      .info-label {
+        font-weight: bold;
+        width: 30%;
+        color: #374151;
+      }
+
+      .info-value {
+        color: #1f2937;
+        width: 70%;
+      }
+
+      .vaccine-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .vaccine-table th,
+      .vaccine-table td {
+        border: 1px solid #d1d5db;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .vaccine-table th {
+        background-color: #f3f4f6;
+        color: #374151;
+      }
+
+      .vaccine-table td {
+        background-color: #ffffff;
+        color: #1f2937;
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 10px;
+        color: #6b7280;
+        margin-top: 30px;
+        border-top: 1px solid #d1d5db;
+        padding-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Pet Profile: {{ pet.name }}</h1>
+      <div class="status-badge status-{{ pet.status }}">
+        {{ pet.status }}
+      </div>
+    </div>
+
+    <!-- Basic Info -->
+    <div class="section">
+      <div class="section-title">Basic Information</div>
+      <table class="info-table">
+        <tr>
+          <td class="info-label">Name:</td>
+          <td class="info-value">{{ pet.name }}</td>
+        </tr>
+        <tr>
+          <td class="info-label">Species:</td>
+          <td class="info-value">{{ pet.species }}</td>
+        </tr>
+        <tr>
+          <td class="info-label">Breed:</td>
+          <td class="info-value">{{ pet.breed|default:"-" }}</td>
+        </tr>
+        <tr>
+          <td class="info-label">Color:</td>
+          <td class="info-value">{{ pet.color|default:"-" }}</td>
+        </tr>
+        <tr>
+          <td class="info-label">Weight:</td>
+          <td class="info-value">
+            {% if pet.weight %}{{ pet.weight }} kg{% else %}-{% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td class="info-label">Gender:</td>
+          <td class="info-value">{{ pet.gender|default:"-" }}</td>
+        </tr>
+        <tr>
+          <td class="info-label">Age:</td>
+          <td class="info-value">
+            {{ pet.age.0 }} years {{ pet.age.1 }} months
+          </td>
+        </tr>
+        <tr>
+          <td class="info-label">Adoption Fee:</td>
+          <td class="info-value">${{ pet.adoption_fee }}</td>
+        </tr>
+        <tr>
+          <td class="info-label">Description:</td>
+          <td class="info-value">{{ pet.description|default:"No description." }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Vaccination Records -->
+    <div class="section">
+      <div class="section-title">Vaccination Records</div>
+
+      {% if pet.vaccines.all %}
+      <table class="vaccine-table">
+        <thead>
+          <tr>
+            <th style="width: 25%">Vaccine Name</th>
+            <th style="width: 35%">Description</th>
+            <th style="width: 40%">Protects Against</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for vaccine in pet.vaccines.all %}
+          <tr>
+            <td>{{ vaccine.name }}</td>
+            <td>{{ vaccine.description|default:"-" }}</td>
+            <td>{{ vaccine.protects_against|default:"-" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No vaccination records found.</p>
+      {% endif %}
+    </div>
+
+    <div class="footer">
+      Generated on {{ now|date:"F j, Y" }} — Pet Management System
+    </div>
+  </body>
+</html>

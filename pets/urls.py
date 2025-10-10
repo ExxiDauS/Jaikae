@@ -27,4 +27,5 @@ urlpatterns = [
     path("<int:pet_id>/", views.PetDetailView.as_view(), name="pet_detail"),
     path("<int:pet_id>/edit/", views.EditPetView.as_view(), name="edit_pet"),
     path("<int:pet_id>/delete/", views.DeletePetView.as_view(), name="delete_pet"),
+    path("<int:pet_id>/download-pdf/", views.PetPDFView.as_view(), name="download_pet_pdf"),
 ]
