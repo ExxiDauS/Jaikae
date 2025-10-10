@@ -1,25 +1,135 @@
+<!-- templates/landing.html -->
 {% extends 'base.html' %}
-
 {% block title %}
-  Jaikae - Home
+  Welcome to Jaikae
 {% endblock %}
 
 {% block content %}
-  <p class="text-primary">Hello, this is a paragraph with Ubuntu Regular font.</p>
-  <button class="btn btn-primary">Hello daisyUI</button>
-  <button class="btn btn-neutral">Neutral</button>
-  <button class="btn btn-primary">Primary</button>
-  <button class="btn btn-secondary">Secondary</button>
-  <button class="btn btn-accent">Accent</button>
-  <button class="btn btn-info">Info</button>
-  <button class="btn btn-success">Success</button>
-  <button class="btn btn-warning">Warning</button>
-  <button class="btn btn-error">Error</button>
-  <h1>Welcome to My Site</h1>
-  <p>Please choose an option:</p>
-  <ul>
-    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-    <li><a href="{% url 'account_login' %}">Log In</a></li>
-    <li><a href="{% url 'account_reset_password' %}">Reset Password</a></li>
-  </ul>
+  <!-- Hero Section -->
+  <section class="hero min-h-[80vh]">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+      <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=800&q=80" class="max-w-sm rounded-lg shadow-2xl" alt="Adoptable pets" />
+      <div>
+        <h1 class="text-5xl font-bold text-primary">Find your furry best friend!</h1>
+        <p class="py-6 text-lg">Jaikae connects loving people with pets in need of a home. Browse, meet, and adopt — all in one community-driven platform.</p>
+        <a href="{% url 'pets' %}" class="btn btn-primary text-white">Start Adopting</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-16 bg-base-200">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold">Find Pets from Around the World</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 max-w-6xl mx-auto">
+      <div class="card shadow-xl">
+        <div class="card-body">
+          <h3 class="card-title">Global Reach</h3>
+          <p>Discover adoptable pets from around the world—shelters and families united in one place.</p>
+        </div>
+      </div>
+      <div class="card shadow-xl">
+        <div class="card-body">
+          <h3 class="card-title">Easy Matching</h3>
+          <p>Get personalized pet matches based on your lifestyle and preferences.</p>
+        </div>
+      </div>
+      <div class="card shadow-xl">
+        <div class="card-body">
+          <h3 class="card-title">Open to Everyone</h3>
+          <p>Everyone can list their pet for adoption, helping them find a loving home faster.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Adopt Section -->
+  <section id="adopt" class="py-16">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold">Meet Our Pets</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-6 max-w-6xl mx-auto">
+      {% for item in pets %}
+        <div class="card card-compact shadow-md hover:shadow-lg transition-shadow">
+          <figure class="relative">
+            {% if item.image_url %}
+              <img src="{{ item.image_url }}" alt="{{ item.pet.name }}" class="h-48 w-full object-contain" />
+            {% else %}
+              <div class="flex items-center justify-center h-48 w-full bg-base-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <rect x="3" y="5" width="18" height="14" rx="2" stroke-width="2" stroke="currentColor" fill="none" />
+                  <circle cx="8" cy="10" r="2" stroke-width="2" stroke="currentColor" fill="none" />
+                  <path d="M21 19l-5.5-7-4.5 6-3-4-4 5" stroke-width="2" stroke="currentColor" fill="none" />
+                </svg>
+              </div>
+            {% endif %}
+            <!-- Status Badge -->
+            {% if item.pet.status == 'Available' %}
+              <div class="badge badge-success absolute bottom-2 left-2">{{ item.pet.status }}</div>
+            {% elif item.pet.status == 'Pending' %}
+              <div class="badge badge-warning absolute bottom-2 left-2">{{ item.pet.status }}</div>
+            {% elif item.pet.status == 'Adopted' %}
+              <div class="badge badge-error absolute bottom-2 left-2">{{ item.pet.status }}</div>
+            {% else %}
+              <div class="badge badge-neutral absolute bottom-2 left-2">{{ item.pet.status }}</div>
+            {% endif %}
+
+            {% if item.pet.vaccines.exists %}
+              <div class="badge badge-accent absolute top-2 left-2">Vaccinated</div>
+            {% endif %}
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title text-primary">{{ item.pet.name }}<div class="badge badge-secondary">{{ item.pet.age.0 }} years {{ item.pet.age.1 }} months</div></h2>
+            <div class="text-sm space-y-1">
+              <div>
+                {{ item.pet.species }}{% if item.pet.breed %}
+                  , {{ item.pet.breed }}
+                {% endif %}
+              </div>
+              <div>
+                {% if item.pet.gender %}
+                  {{ item.pet.gender }}
+                {% else %}
+                  Gender not specified
+                {% endif %}
+              </div>
+              <div>
+                {% if item.pet.color %}
+                  {{ item.pet.color }}
+                {% else %}
+                  Color not specified
+                {% endif %}
+              </div>
+              <div>
+                {% if item.pet.weight %}
+                  {{ item.pet.weight }} kg
+                {% else %}
+                  Weight not specified
+                {% endif %}
+              </div>
+            </div>
+            <p class="text-sm text-base-content/70 mt-2">
+              {% if item.pet.description %}
+                {{ item.pet.description }}
+              {% else %}
+                No description available
+              {% endif %}
+            </p>
+            <div class="card-actions justify-between items-center mt-4">
+              <div class="text-lg font-bold text-primary">${{ item.pet.adoption_fee }}</div>
+              <a href="{% url 'pet_detail' item.pet.id %}" class="btn btn-primary btn-sm text-white">Learn More</a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center col-span-3">No pets available for adoption right now 🐾</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Credits Section -->
+  <section class="py-20 bg-base-200 text-center">
+    <p>made with fluffy love by <span class="font-bold text-primary">KwnxpN</span> and <span class="font-bold text-primary">ExxiDaus</span></p>
+  </section>
 {% endblock %}
