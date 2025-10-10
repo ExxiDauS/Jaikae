@@ -9,9 +9,6 @@ python manage.py makemigrations --noinput
 echo "Running migrations..."
 python manage.py migrate --noinput
 
-echo "tailwindcss build"
-./static/css/tailwindcss.exe -i ./static/css/input.css -o ./static/css/output.css
-
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
