@@ -315,10 +315,12 @@ def get_breeds(request):
 
     breeds = []
     if species:
+        current_user = User.objects.get(auth_user=request.user)
         breeds = (
             Pet.objects.filter(species=species)
             .exclude(breed__isnull=True)   # exclude NULL
             .exclude(breed__exact="")      # exclude empty string
+            .exclude(user=current_user)  # exclude current user's pets
             .values_list("breed", flat=True)  # get list of breed values
             .distinct()
             .order_by("breed")
