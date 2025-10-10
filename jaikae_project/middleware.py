@@ -1,5 +1,6 @@
 # core/middleware.py
-from django.shortcuts import redirect
+from urllib import response
+from django.shortcuts import redirect, render
 from django.urls import reverse, resolve
 from django.contrib import messages
 
@@ -24,7 +25,6 @@ class AuthPermissionMiddleware:
             reverse("landing"),  # public landing page
         ]
 
-
         # If user isn't authenticated and trying to access protected pages
         if not request.user.is_authenticated:
             if not any(request.path == path for path in allowed_paths):
@@ -39,4 +39,8 @@ class AuthPermissionMiddleware:
 
         # Pass request to next middleware or view
         response = self.get_response(request)
+        if response.status_code == 403:
+            return render(request, "403.html", status=403)
+        elif response.status_code == 404:
+            return render(request, "404.html", status=404)
         return response

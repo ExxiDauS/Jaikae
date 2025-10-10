@@ -11,9 +11,11 @@ from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 import io
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
+class PetsView(PermissionRequiredMixin, View):
+    permission_required = ["pets.view_pet"]
 
-class PetsView(View):
     def get(self, request):
         form = PetFilterForm(request.GET or None)
 
@@ -120,8 +122,9 @@ class PetsView(View):
             return None
 
 
-class PetDetailView(View):
+class PetDetailView(PermissionRequiredMixin, View):
     """View for displaying detailed information about a specific pet."""
+    permission_required = ["pets.view_pet"]
 
     def get(self, request, pet_id):
         try:
@@ -141,8 +144,9 @@ class PetDetailView(View):
         return render(request, "pets/pet_detail.html", context)
 
 
-class RegisterPetView(View):
+class RegisterPetView(PermissionRequiredMixin, View):
     """View for registering a new pet."""
+    permission_required = ["pets.add_pet"]
 
     def get(self, request):
         pet_form = RegisterPetForm()
@@ -184,8 +188,9 @@ class RegisterPetView(View):
         )
 
 
-class MyPetsView(View):
+class MyPetsView(PermissionRequiredMixin, View):
     """View for displaying the current user's registered pets."""
+    permission_required = ["pets.view_pet"]
 
     def get(self, request):
         if not request.user.is_authenticated:
@@ -224,17 +229,22 @@ class MyPetsView(View):
         )
 
 
-class EditPetView(View):
+class EditPetView(PermissionRequiredMixin, View):
     """View for editing an existing pet's details."""
+    permission_required = ["pets.change_pet"]
 
     def get(self, request, pet_id):
         if not request.user.is_authenticated:
             return redirect("account_login")
 
         try:
-            pet = Pet.objects.get(id=pet_id, user__auth_user=request.user)
+            pet = Pet.objects.get(id=pet_id)
         except Pet.DoesNotExist:
             return render(request, "404.html", status=404)
+
+        # If the pet doesn't belong to the current user, redirect to pets
+        if pet.user.auth_user != request.user:
+            return redirect("pets")
 
         pet_form = RegisterPetForm(instance=pet)
         image_form = PetImageForm(instance=getattr(pet, "image", None))
@@ -292,8 +302,12 @@ class EditPetView(View):
         )
 
 
-class DeletePetView(View):
+class DeletePetView(PermissionRequiredMixin, View):
     """View for deleting an existing pet."""
+    permission_required = ["pets.delete_pet"]
+
+    def get(self, request, pet_id):
+        return redirect("pets")
 
     def post(self, request, pet_id):
         if not request.user.is_authenticated:
@@ -312,8 +326,9 @@ class DeletePetView(View):
         return redirect("my_pets")
 
 
-class PetPDFView(View):
+class PetPDFView(PermissionRequiredMixin, View):
     """View for downloading pet details as a PDF."""
+    permission_required = ["pets.view_pet"]
 
     def get(self, request, pet_id):
         if not request.user.is_authenticated:

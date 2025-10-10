@@ -9,7 +9,6 @@ from jaikae_project.utils import generate_presigned_url
 def home(request):
     return render(request, "index.html")
 
-
 def profile(request):
     if not request.user.is_authenticated:
         return redirect("account_login")

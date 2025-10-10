@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -15,6 +15,7 @@ from jaikae_project.utils import send_application_status_email
 
 
 @login_required
+@permission_required("adoptions.add_adoptionapplication", raise_exception=True)
 def apply_for_adoption(request, pet_id=None):
     pet = None
     if pet_id:
@@ -54,6 +55,7 @@ def apply_for_adoption(request, pet_id=None):
 
 
 @login_required
+@permission_required("adoptions.view_adoptionapplication", raise_exception=True)
 def my_applications(request):
     custom_user = User.objects.get(auth_user=request.user.id)
     applications = (
@@ -72,6 +74,7 @@ def my_applications(request):
 
 
 @login_required
+@permission_required("adoptions.view_adoptionapplication", raise_exception=True)
 def manage_applications(request):
     custom_user = User.objects.get(auth_user=request.user.id)
     my_pet = Pet.objects.filter(user=custom_user)
@@ -88,6 +91,7 @@ def manage_applications(request):
 
 
 @login_required
+@permission_required("adoptions.change_adoptionapplication", raise_exception=True)
 def approve_application(request, pk):
     application = AdoptionApplication.objects.get(id=pk)
 
@@ -152,6 +156,7 @@ def approve_application(request, pk):
 
 
 @login_required
+@permission_required("adoptions.change_adoptionapplication", raise_exception=True)
 def reject_application(request, pk):
     application = get_object_or_404(AdoptionApplication, id=pk, pet__owner=request.user)
 
@@ -179,6 +184,7 @@ def reject_application(request, pk):
 
 
 @login_required
+@permission_required("adoptions.view_adoptionapplication", raise_exception=True)
 def adoption_application_detail(request, pk):
     custom_user = User.objects.get(auth_user=request.user.id)
     application = get_object_or_404(AdoptionApplication, id=pk, user=custom_user)
@@ -190,6 +196,7 @@ def adoption_application_detail(request, pk):
 
 
 @login_required
+@permission_required("adoptions.view_adoptionapplication", raise_exception=True)
 def download_application_pdf(request, pk):
     custom_user = User.objects.get(auth_user=request.user.id)
     application = get_object_or_404(AdoptionApplication, id=pk, user=custom_user)

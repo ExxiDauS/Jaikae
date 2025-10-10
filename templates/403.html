@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  403 Forbidden
+{% endblock %}
+
+{% block navbar %}
+
+{% endblock %}
+
+{% block content %}
+  <div class="flex flex-col items-center justify-center self-center text-center p-6 max-w-lg">
+    <img src="/static/img/Arnold_Alois_Schwarzenegger.png" alt="Forbidden" class="w-56 mx-auto mb-6" />
+    <h1 class="text-5xl font-bold mb-2">403 – Access Forbidden</h1>
+    <p class="text-lg mb-6">
+      You don’t have permission to access this page.<br />
+      Please check your account privileges or contact support.
+    </p>
+    <a href="{% url 'landing' %}" class="btn btn-primary text-white">Go Home</a>
+  </div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from allauth.account.forms import SignupForm
-from django.forms import ModelForm
+from django.contrib.auth.models import Group
 from django import forms
 from .models import *
 from django.db import transaction
@@ -22,6 +22,11 @@ class CustomSignUpForm(SignupForm):
         user.address = self.cleaned_data["address"]
         user.phone_number = self.cleaned_data["phone_number"]
         user.description = self.cleaned_data["description"]
+        user.save()
+
+        for group_name in ["Pet Provider", "Adopter"]:
+            group, _ = Group.objects.get_or_create(name=group_name)
+            user.groups.add(group)
 
         local_user = User(
             auth_user=user,  # Fixed: use the user instance, not user.id
@@ -33,7 +38,6 @@ class CustomSignUpForm(SignupForm):
             description=user.description,
         )
         local_user.save()
-        user.save()
         return user
 
 

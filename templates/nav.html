@@ -26,23 +26,41 @@
           </label>
           <ul tabindex="0" class="menu menu-md dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 w-64 rounded-box">
             <li class="border-b border-black">
-              <a class="text-lg" href="/">Home</a>
+              <a href="/">Home</a>
             </li>
-            <li class="border-b border-black">
-              <a class="text-lg" href="{% url 'pets' %}">Pets</a>
-            </li>
-            <li class="border-b border-black">
-              <a class="text-lg" href="{% url 'my_applications' %}">Adoptions</a>
-            </li>
-            <li class="border-b border-black">
-              <a class="text-lg" href="{% url 'vaccines' %}">Vaccines</a>
-            </li>
-            <li class="border-b border-black">
-              <a class="text-lg" href="{% url 'my_pets' %}">My Pets</a>
-            </li>
-            {% if user.is_authenticated and user.is_staff %}
+            {% if perms.pets.view_pet %}
               <li class="border-b border-black">
-                <a href="admin/">Admin Panel</a>
+                <a href="{% url 'pets' %}">Pets</a>
+              </li>
+            {% endif %}
+
+            {% if perms.adoptions.view_adoptionapplication %}
+              <li class="border-b border-black">
+                <a href="{% url 'my_applications' %}">Adoptions</a>
+              </li>
+            {% endif %}
+
+            {% if perms.adoptions.view_adoptionapplication %}
+              <li class="border-b border-black">
+                <a href="{% url 'manage_applications' %}">Request</a>
+              </li>
+            {% endif %}
+
+            {% if perms.vaccines.view_vaccine %}
+              <li class="border-b border-black">
+                <a href="{% url 'vaccines' %}">Vaccines</a>
+              </li>
+            {% endif %}
+
+            {% if perms.pets.view_pet %}
+              <li class="border-b border-black">
+                <a href="{% url 'my_pets' %}">My Pets</a>
+              </li>
+            {% endif %}
+
+            {% if user.is_authenticated and user.is_staff %}
+              <li>
+                <a href="{% url 'admin:index' %}">Admin Panel</a>
               </li>
             {% endif %}
             {% comment %}Login Register Buttons (Mobile){% endcomment %}
@@ -89,29 +107,44 @@
           <li>
             <a href="/">Home</a>
           </li>
-          <li>
-            <a href="{% url 'pets' %}">Pets</a>
-          </li>
-          <li>
-            <a href="{% url 'my_applications' %}">Adoptions</a>
-          </li>
-          <li>
-            <a href="{% url 'manage_applications' %}">Request</a>
-          </li>
-          <li>
-            <a href="{% url 'vaccines' %}">Vaccines</a>
-          </li>
-          <li>
-            <a href="{% url 'my_pets' %}">My Pets</a>
-          </li>
+          {% if perms.pets.view_pet %}
+            <li>
+              <a href="{% url 'pets' %}">Pets</a>
+            </li>
+          {% endif %}
+
+          {% if perms.adoptions.view_adoptionapplication %}
+            <li>
+              <a href="{% url 'my_applications' %}">Adoptions</a>
+            </li>
+          {% endif %}
+
+          {% if perms.adoptions.view_adoptionapplication %}
+            <li>
+              <a href="{% url 'manage_applications' %}">Request</a>
+            </li>
+          {% endif %}
+
+          {% if perms.vaccines.view_vaccine %}
+            <li>
+              <a href="{% url 'vaccines' %}">Vaccines</a>
+            </li>
+          {% endif %}
+
+          {% if perms.pets.view_pet %}
+            <li>
+              <a href="{% url 'my_pets' %}">My Pets</a>
+            </li>
+          {% endif %}
+
           {% if user.is_authenticated and user.is_staff %}
             <li>
-              <a href="admin/">Admin Panel</a>
+              <a href="{% url 'admin:index' %}">Admin Panel</a>
             </li>
           {% endif %}
           {% comment %}Login Register Buttons{% endcomment %}
           {% if not user.is_authenticated %}
-            <div class="mt-2">
+            <div>
               <div class="flex flex-row gap-2 w-full">
                 <a class="btn btn-outline btn-secondary btn-sm flex-1 text-black" href="{% url 'account_signup' %}">Register</a>
                 <a class="btn btn-primary btn-sm flex-1 text-white" href="{% url 'account_login' %}">Login</a>
