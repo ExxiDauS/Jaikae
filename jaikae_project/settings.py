@@ -217,3 +217,16 @@ ACCOUNT_REMEMBER_COOKIE_NAME = "jaikae_remember"
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 CSRF_TRUSTED_ORIGINS = ["https://exxidaus.ucnil.dev"]
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+
+# Email backend settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "jaikaeproject@gmail.com"
+EMAIL_HOST_PASSWORD = "rpjw ostx cwga ckmw"
+DEFAULT_FROM_EMAIL = "Pet Adoption <noreply@petadoption.com>"

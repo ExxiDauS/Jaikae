@@ -1,5 +1,8 @@
 import boto3
 from django.conf import settings
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
 
 
 def connect_minio_client():
@@ -37,3 +40,36 @@ def generate_presigned_url(object_name, expiration=3600, http_method="GET"):
     except Exception as e:
         print(f"Error generating presigned URL: {e}")
         return None
+
+
+def send_application_status_email(application, request=None):
+    user = application.user
+    status = application.status
+    site_url = (
+        f"{request.scheme}://{get_current_site(request).domain}"
+        if request
+        else ("https://exxidaus.ucnil.dev/")
+    )
+    context = {
+        "application": application,
+        "status": status,
+        "site_url": site_url,
+        "contact_email": settings.DEFAULT_FROM_EMAIL,
+    }
+    subject = f"Adoption Application {status} - {application.pet.name}"
+    html_content = render_to_string("emails/application_status.html", context)
+    email = EmailMessage(
+        subject=subject,
+        body=html_content,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[user.email],
+    )
+    email.content_subtype = "html"
+
+    # Send email
+    try:
+        email.send()
+        return True
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+        return False
