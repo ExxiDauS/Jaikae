@@ -7,7 +7,7 @@
 {% block content %}
   <!-- Hero Section -->
   <section class="hero min-h-[80vh]">
-    <div class="hero-content flex-col lg:flex-row-reverse">
+    <div class="hero-content flex-row-reverse">
       <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=800&q=80" class="max-w-sm rounded-lg shadow-2xl" alt="Adoptable pets" />
       <div>
         <h1 class="text-5xl font-bold text-primary">Find your furry best friend!</h1>
@@ -49,7 +49,7 @@
     <div class="text-center mb-8">
       <h2 class="text-3xl font-bold">Meet Our Pets</h2>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-6 max-w-6xl mx-auto">
+    <div class="grid grid-cols-3 gap-8 px-6 max-w-6xl mx-auto">
       {% for item in pets %}
         <div class="card card-compact shadow-md hover:shadow-lg transition-shadow">
           <figure class="relative">
