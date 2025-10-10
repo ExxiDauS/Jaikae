@@ -7,11 +7,11 @@
 {% block content %}
   <!-- Hero Section -->
   <section class="min-h-[80vh] flex items-center">
-    <div class="w-full max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10 md:items-center">
-      <div class="order-1 md:order-2 flex justify-center">
+    <div class="w-full max-w-6xl mx-auto px-6 flex flex-row-reverse gap-10 items-center">
+      <div class="flex justify-center">
         <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=800&q=80" class="max-w-sm w-full rounded-lg shadow-2xl object-cover" alt="Adoptable pets" />
       </div>
-      <div class="order-2 md:order-1">
+      <div class="text-left">
         <h1 class="text-5xl font-bold text-primary">Find your furry best friend!</h1>
         <p class="py-6 text-lg">Jaikae connects loving people with pets in need of a home. Browse, meet, and adopt — all in one community-driven platform.</p>
         <a href="{% url 'pets' %}" class="btn btn-primary text-white">Start Adopting</a>

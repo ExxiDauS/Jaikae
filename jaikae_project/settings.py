@@ -73,6 +73,7 @@ MIDDLEWARE = [
     "allauth.usersessions.middleware.UserSessionsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "livereload.middleware.LiveReloadScript",
+    "jaikae_project.middleware.AuthPermissionMiddleware",
 ]
 
 ROOT_URLCONF = "jaikae_project.urls"
