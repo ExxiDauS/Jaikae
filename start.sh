@@ -2,9 +2,15 @@
 
 echo "Starting Django application..."
 
+echo "Applying database migrations..."
+python manage.py makemigrations --noinput
+
 # Run migrations
 echo "Running migrations..."
 python manage.py migrate --noinput
+
+echo "tailwindcss build"
+./static/css/tailwindcss.exe -i ./static/css/input.css -o ./static/css/output.css
 
 # Collect static files
 echo "Collecting static files..."
