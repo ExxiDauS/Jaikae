@@ -36,7 +36,7 @@ class AuthPermissionMiddleware:
                 messages.error(
                     request, "You don't have permission to access admin area.")
                 return redirect("landing")
-    
+
         # Pass request to next middleware or view
         response = self.get_response(request)
         return response

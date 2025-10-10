@@ -14,9 +14,7 @@
   <body>
     <nav class="navbar bg-base-100 shadow-lg">
       <div class="flex-1">
-        <a class="flex items-center h-16 px-4" href="/">
-            <img src="{% static 'img/Jaikae_logo_nobg.png' %}" alt="Jaikae Logo" class="h-32 w-auto object-fit-cover object-position-center">
-        </a>
+        <a class="flex items-center h-16 px-4" href="/"><img src="{% static 'img/Jaikae_logo_nobg.png' %}" alt="Jaikae Logo" class="h-32 w-auto object-fit-cover object-position-center" /></a>
       </div>
       <div class="flex-none">
         <!-- Hamburger button for mobile -->
@@ -42,6 +40,11 @@
             <li class="border-b border-black">
               <a class="text-lg" href="{% url 'my_pets' %}">My Pets</a>
             </li>
+            {% if user.is_authenticated and user.is_staff %}
+              <li class="border-b border-black">
+                <a href="admin/">Admin Panel</a>
+              </li>
+            {% endif %}
             {% comment %}Login Register Buttons (Mobile){% endcomment %}
             {% if not user.is_authenticated %}
               <div class="mt-2">
@@ -62,7 +65,7 @@
                 {% else %}
                   <div class="avatar avatar-placeholder">
                     <div class="bg-neutral text-neutral-content w-12 rounded-full">
-                      <span class="font-bold">{{ user.username|slice:":2" }}</span>
+                      <span class="font-bold">{{ user.username|slice:':2' }}</span>
                     </div>
                   </div>
                 {% endif %}
@@ -101,6 +104,11 @@
           <li>
             <a href="{% url 'my_pets' %}">My Pets</a>
           </li>
+          {% if user.is_authenticated and user.is_staff %}
+            <li>
+              <a href="admin/">Admin Panel</a>
+            </li>
+          {% endif %}
           {% comment %}Login Register Buttons{% endcomment %}
           {% if not user.is_authenticated %}
             <div class="mt-2">
@@ -122,7 +130,7 @@
                 {% else %}
                   <div class="avatar avatar-placeholder">
                     <div class="bg-neutral text-neutral-content w-10 rounded-full">
-                      <span>{{ user.username|slice:":2" }}</span>
+                      <span>{{ user.username|slice:':2' }}</span>
                     </div>
                   </div>
                 {% endif %}
@@ -138,7 +146,7 @@
                   {% else %}
                     <div class="avatar avatar-placeholder mb-2">
                       <div class="bg-neutral text-neutral-content w-16 rounded-full flex items-center justify-center">
-                        <span class="font-bold text-lg">{{ user.username|slice:":2" }}</span>
+                        <span class="font-bold text-lg">{{ user.username|slice:':2' }}</span>
                       </div>
                     </div>
                   {% endif %}
