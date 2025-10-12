@@ -20,6 +20,7 @@ services:
       - app-network
 
   web-app:
+    container_name: web-app
     image: jaikae-app:latest
     restart: always
     ports:
@@ -36,6 +37,7 @@ services:
       - app-network
 
   web-app-1:
+    container_name: web-app-1
     image: jaikae-app:latest
     restart: always
     ports:
@@ -52,6 +54,7 @@ services:
       - app-network
 
   web-app-2:
+    container_name: web-app-2
     image: jaikae-app:latest
     restart: always
     ports:
