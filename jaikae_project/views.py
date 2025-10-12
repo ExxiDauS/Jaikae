@@ -2,6 +2,9 @@ from django.views import View
 from django.shortcuts import render
 from jaikae_project.utils import generate_presigned_url
 from pets.models import Pet
+from django.http import JsonResponse
+import os
+import socket
 
 class LandingPageView(View):
     def get(self, request):
@@ -22,4 +25,11 @@ class LandingPageView(View):
             })
 
         return render(request, "index.html", {"pets": pet_data})
-    
+
+def health(request):
+    """Return a basic health check JSON with instance info."""
+    return JsonResponse({
+        "status": "ok",
+        # show which container handled the request
+        "instance": os.getenv("HOSTNAME", socket.gethostname()),
+    })
