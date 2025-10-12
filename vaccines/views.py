@@ -1,16 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from .models import Vaccine
 from .forms import VaccineForm
 from django.db import transaction
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 # Create your views here.
-class VaccineListView(View):
+class VaccineListView(PermissionRequiredMixin, View):
+    permission_required = ["vaccines.view_vaccine"]
+
     def get(self, request):
         vaccines = Vaccine.objects.all()
         return render(request, "vaccines/vaccines_list.html", {"vaccines": vaccines})
 
-class AddVaccineView(View):
+class AddVaccineView(PermissionRequiredMixin, View):
+    permission_required = ["vaccines.add_vaccine"]
+
     def get(self, request):
         form = VaccineForm()
         return render(request, "vaccines/add_vaccine.html", {"form": form})
@@ -22,8 +27,10 @@ class AddVaccineView(View):
                 form.save()
             return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all()})
         return render(request, "vaccines/add_vaccine.html", {"form": form})
-    
-class EditVaccineView(View):
+
+class EditVaccineView(PermissionRequiredMixin, View):
+    permission_required = ["vaccines.change_vaccine"]
+
     def get(self, request, vaccine_id):
         try:
             vaccine = Vaccine.objects.get(id=vaccine_id)
@@ -45,7 +52,12 @@ class EditVaccineView(View):
             return render(request, "vaccines/vaccines_list.html", {"vaccines": Vaccine.objects.all()})
         return render(request, "vaccines/edit_vaccine.html", {"form": form})
 
-class DeleteVaccineView(View):
+class DeleteVaccineView(PermissionRequiredMixin, View):
+    permission_required = ["vaccines.delete_vaccine"]
+
+    def get(self, request, vaccine_id):
+        return redirect("vaccines_list")
+    
     def post(self, request, vaccine_id):
         try:
             vaccine = Vaccine.objects.get(id=vaccine_id)

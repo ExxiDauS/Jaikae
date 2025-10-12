@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  404 Not Found
+{% endblock %}
+
+{% block navbar %}
+
+{% endblock %}
+
+{% block content %}
+  <div class="flex flex-col items-center justify-center self-center text-center p-6 max-w-lg">
+    <img src="/static/img/Disappear.gif" alt="Not Found" class="w-128 mx-auto mb-6" />
+    <h1 class="text-5xl font-bold mb-2">404 – Page Not Found</h1>
+    <p class="text-lg mb-6">Oops! The page you’re looking for doesn’t exist or has been moved.</p>
+    <a href="{% url 'landing' %}" class="btn btn-primary text-white">Return Home</a>
+  </div>
+{% endblock %}

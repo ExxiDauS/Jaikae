@@ -1,7 +1,6 @@
 # models.py
 from django.db import models
 
-
 def user_image_path(instance, filename):
     """Generate upload path for user profile images."""
     return f"profiles/{instance.auth_user.id}/{filename}"

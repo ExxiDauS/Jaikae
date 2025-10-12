@@ -21,7 +21,7 @@ from jaikae_project.views import LandingPageView
 from jaikae_project import views
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("admin/", admin.site.urls, name="admin"),
     path("", LandingPageView.as_view(), name="landing"),
     path("users/", include("users.urls")),
     path("accounts/", include("allauth.urls")),
