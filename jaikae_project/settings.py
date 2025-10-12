@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "allauth.usersessions",
     "storages",
+    "django_prometheus",
     # 'allauth.socialaccount.providers.google',
     # Local apps
     "users",
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -74,6 +76,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "livereload.middleware.LiveReloadScript",
     "jaikae_project.middleware.AuthPermissionMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "jaikae_project.urls"
