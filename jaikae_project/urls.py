@@ -29,5 +29,5 @@ urlpatterns = [
     path("adoptions/", include("adoptions.urls")),
     path("vaccines/", include("vaccines.urls")),
     path("health/", views.health, name="health"),
-    path("metrics/", include("django_prometheus.urls")),
+    path("", include("django_prometheus.urls")),
 ]
