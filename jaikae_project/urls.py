@@ -18,6 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from jaikae_project.views import LandingPageView
+from jaikae_project import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -27,4 +28,5 @@ urlpatterns = [
     path("pets/", include("pets.urls")),
     path("adoptions/", include("adoptions.urls")),
     path("vaccines/", include("vaccines.urls")),
+    path("health/", views.health, name="health"),
 ]
