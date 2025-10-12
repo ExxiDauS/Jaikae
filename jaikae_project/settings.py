@@ -109,7 +109,7 @@ DATABASES = {
         "NAME": "jaikae_db",
         "USER": database_username,
         "PASSWORD": database_password,
-        "HOST": "34.142.193.48",
+        "HOST": "34.126.139.177",
         "PORT": "5433",
     }
 }
