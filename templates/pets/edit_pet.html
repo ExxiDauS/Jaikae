@@ -147,12 +147,12 @@
               <h2 class="text-xl font-semibold mb-4">Pet Image</h2>
 
               <!-- Current Image Preview -->
-              {% if pet.image %}
+              {% if image_url %}
                 <div class="form-control">
                   <label class="label"><span class="label-text font-medium">Current Image</span></label>
                   <div class="card bg-base-200 shadow-sm">
                     <figure class="px-4 pt-4">
-                      <img src="{{ image_url }}" alt="{{ pet.name }}" class="rounded-xl max-h-64 w-full object-contain" onerror="this.src='{% static 'images/placeholder-pet.png' %}'" />
+                      <img src="{{ image_url }}" alt="{{ pet.name }}" class="rounded-xl max-h-64 w-full object-contain" />
                     </figure>
                     <div class="card-body items-center text-center pt-2">
                       <p class="text-sm text-base-content/70">Upload a new image to replace this one</p>
