@@ -315,6 +315,8 @@ class DeletePetView(PermissionRequiredMixin, View):
 
         try:
             pet = Pet.objects.get(id=pet_id, user__auth_user=request.user)
+            if pet.user.auth_user != request.user:
+                return redirect("pets")
         except Pet.DoesNotExist:
             return render(request, "404.html", status=404)
 

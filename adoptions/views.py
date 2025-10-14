@@ -20,6 +20,8 @@ def apply_for_adoption(request, pet_id=None):
     pet = None
     if pet_id:
         pet = get_object_or_404(Pet, id=pet_id, status="Available")
+        if pet.user.auth_user == request.user:
+            return redirect("pet_detail", pet_id=pet_id)
 
     if request.method == "POST":
         form = AdoptionApplicationForm(request.POST, pet_id=pet_id)
