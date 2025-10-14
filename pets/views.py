@@ -250,7 +250,7 @@ class EditPetView(PermissionRequiredMixin, View):
         image_form = PetImageForm(instance=getattr(pet, "image", None))
 
         image_url = None
-        if getattr(pet, "image", None):
+        if getattr(pet, "image", None) and pet.image.pet_image:
             image_url = generate_presigned_url(str(pet.image.pet_image))
 
         return render(
