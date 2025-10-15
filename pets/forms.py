@@ -93,23 +93,7 @@ class PetFilterForm(forms.Form):
             (s, s) for s in species_qs if s
         ]
 
-        # Use initial request data to filter breeds
-        species_selected = self.data.get(
-            "species") or self.initial.get("species")
-        if species_selected:
-            breed_qs = (
-                Pet.objects.filter(species=species_selected)
-                .exclude(breed__isnull=True)
-                .exclude(breed__exact="")
-                .values_list("breed", flat=True)
-                .distinct()
-                .order_by("breed")
-            )
-            self.fields["breed"].choices = [("", "All Breeds")] + [
-                (b, b) for b in breed_qs if b
-            ]
-        else:
-            self.fields["breed"].choices = [("", "All Breeds")]
+        self.fields["breed"].choices = [("", "All Breeds")]
 
 
 class RegisterPetForm(forms.ModelForm):
