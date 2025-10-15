@@ -170,6 +170,30 @@
         <div class="divider"></div>
         {% endif %}
 
+        <div>
+          <h3 class="text-xl font-semibold mb-3">Pet Owner Information</h3>
+          <div class="bg-base-200 rounded-lg p-4">
+            <p class="text-sm font-semibold text-base-content/70 mb-1">
+              Name
+            </p>
+            <p class="text-lg font-medium">
+              {{ pet_owner.first_name }} {{ pet_owner.last_name }}
+            </p>
+            <p class="text-sm font-semibold text-base-content/70 mb-1">
+              Email
+            </p>
+            <p class="text-lg font-medium">
+              {{ pet_owner.email }}
+            </p>
+            <p class="text-sm font-semibold text-base-content/70 mb-1">
+              Phone
+            </p>
+            <p class="text-lg font-medium">
+              {{ custom_user.phone_number }}
+            </p>
+          </div>
+        </div>
+
         <!-- Application Message -->
         {% if application.notes %}
         <div>

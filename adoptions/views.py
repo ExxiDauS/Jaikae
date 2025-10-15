@@ -160,7 +160,7 @@ def approve_application(request, pk):
 @login_required
 @permission_required("adoptions.change_adoptionapplication", raise_exception=True)
 def reject_application(request, pk):
-    application = get_object_or_404(AdoptionApplication, id=pk, pet__owner=request.user)
+    application = AdoptionApplication.objects.get(id=pk)
 
     if request.method == "POST":
         application.status = "Rejected"
@@ -188,11 +188,13 @@ def reject_application(request, pk):
 @login_required
 @permission_required("adoptions.view_adoptionapplication", raise_exception=True)
 def adoption_application_detail(request, pk):
+    application = AdoptionApplication.objects.get(id=pk)
+    pet_owner = application.pet.user.auth_user
     custom_user = User.objects.get(auth_user=request.user.id)
-    application = get_object_or_404(AdoptionApplication, id=pk, user=custom_user)
-
     context = {
         "application": application,
+        "pet_owner": pet_owner,
+        "custom_user": custom_user,
     }
     return render(request, "adoptions/application_detail.html", context)
 
